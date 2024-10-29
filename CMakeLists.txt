@@ -21,7 +21,9 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 add_executable(superclcbros
-	src/main.cpp)
+	src/main.cpp
+
+  src/Game.cpp)
 
 target_link_libraries(superclcbros PRIVATE sfml-graphics)
 target_compile_features(superclcbros PRIVATE cxx_std_17)
