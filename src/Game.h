@@ -1,6 +1,7 @@
 #ifndef _GAME_H
 #define _GAME_H
 
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Window/Window.hpp>
@@ -11,6 +12,7 @@
 
 class Game {
 private:
+	sf::Font font;
 	std::stack<std::unique_ptr<State>> states;
 
 	void Update();
@@ -28,6 +30,8 @@ public:
 	State& GetState();
 	void PopState();
 	void PushState(std::unique_ptr<State>);
+
+	const sf::Font& GetFont() const;
 };
 
 #endif

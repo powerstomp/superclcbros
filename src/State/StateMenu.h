@@ -1,4 +1,5 @@
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/View.hpp>
 
 #include "../Game.h"
@@ -6,8 +7,8 @@
 
 class StateMenu : public State {
 private:
-	sf::View view;
 	Game* game;
+	sf::Text titleText;
 
 public:
 	StateMenu(Game*);

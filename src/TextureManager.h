@@ -10,6 +10,7 @@ private:
 public:
 	bool Load(const std::string&);
 	bool Has(const std::string&) const;
+	const sf::Texture& GetOrLoad(const std::string&);
 	const sf::Texture& Get(const std::string&) const;
 };
 
