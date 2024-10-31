@@ -23,7 +23,9 @@ FetchContent_MakeAvailable(SFML)
 add_executable(superclcbros
 	src/main.cpp
 
-  src/Game.cpp)
+    src/Game.cpp
+
+    src/State/StateMenu.cpp)
 
 target_link_libraries(superclcbros PRIVATE sfml-graphics)
 target_compile_features(superclcbros PRIVATE cxx_std_17)

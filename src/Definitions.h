@@ -1,0 +1,8 @@
+#ifndef _DEFINITIONS_H
+#define _DEFINITIONS_H
+
+constexpr int MICROSECONDS_PER_SECOND = 1000000;
+constexpr int TICKS_PER_SECOND = 40;
+constexpr int TIME_PER_TICK = MICROSECONDS_PER_SECOND / TICKS_PER_SECOND;
+
+#endif
