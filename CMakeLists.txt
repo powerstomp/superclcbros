@@ -29,7 +29,9 @@ add_executable(superclcbros
 
 	src/TextureManager.cpp)
 
-target_link_libraries(superclcbros PRIVATE sfml-graphics)
+target_link_libraries(superclcbros PRIVATE
+	sfml-graphics
+	sfml-audio)
 target_compile_features(superclcbros PRIVATE cxx_std_17)
 
 if(WIN32)
