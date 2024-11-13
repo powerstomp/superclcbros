@@ -27,7 +27,7 @@ add_executable(superclcbros
 
 	src/State/StateMenu.cpp
 
-	src/TextureManager.cpp)
+	src/Utility/TextureManager.cpp)
 
 target_link_libraries(superclcbros PRIVATE
 	sfml-graphics
