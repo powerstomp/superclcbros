@@ -1,20 +1,24 @@
 #include "Subject.h"
+
 #include <algorithm>
+#include <memory>
 #include <vector>
+
 #include "Observer.h"
 
-void Subject::addObserver(Observer* observer) {
+void Subject::AddObserver(std::shared_ptr<Observer> observer) {
 	observers.push_back(observer);
 }
 
-void Subject::removeObserver(Observer* observer) {
-	observers.erase(
-		std::remove(observers.begin(), observers.end(), observer), observers.end()
-	);
+void Subject::RemoveObserver(std::shared_ptr<Observer> observer) {
+	auto it = std::find(observers.begin(), observers.end(), observer);
+	if (it != observers.end()) {
+		observers.erase(it);
+	}
 }
 
-void Subject::notify(int data) {
-	for (Observer* observer : observers) {
-		observer->onNotify(data);
+void Subject::Notify(int data) {
+	for (const auto& observer : observers) {
+		observer->OnNotify(data);
 	}
 }

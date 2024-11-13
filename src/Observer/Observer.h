@@ -1,9 +1,9 @@
-#ifndef OBSERVER_H
-#define OBSERVER_H
+#ifndef _OBSERVER_H
+#define _OBSERVER_H
 
 class Observer {
 public:
-    virtual void onNotify(int data) = 0; 
+    virtual void OnNotify(int data) = 0; 
 };
 
 #endif
