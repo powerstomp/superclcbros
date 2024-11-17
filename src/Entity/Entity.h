@@ -4,31 +4,20 @@
 #include <string>
 #include <memory>
 
-// Basic 2D point structure
-struct Point {
-    float x, y;
-};
 
-// Basic 2D size structure
-struct Dimension {
-    float width, height;
-};
-
-struct Vector {
-    float x, y;
-};
 
 class Entity {
 protected:
-    Point position;
-    Dimension size;
-    Vector velocity;
+    float positionX;
+    float positionY;
+    float width;
+    float height;
     bool isActive;
 
 public:
     Entity();
-    Entity(Point position, Dimension size)
-        : position(position), size(size), velocity({0, 0}), isActive(true) {}
+    Entity(float posX, float posY, float width, float height)
+        : positionX(posX), positionY(posY), width(width), height(height), isActive(true) {}
     virtual ~Entity() = default;
 
     virtual void Update() = 0;
@@ -36,14 +25,19 @@ public:
     virtual void OnCollide(std::shared_ptr<Entity> other) = 0;
 
     // Getters and setters
-    Point GetPosition() const { return position; }
-    void SetPosition(Point position) { this->position = position; }
+    float GetPositionX() const { return positionX; }
+    void SetPositionX(float posX) { positionX = posX; }
 
-    Dimension GetSize() const { return size; }
-    void SetSize(Dimension size) { this->size = size; }
+    float GetPositionY() const { return positionY; }
+    void SetPositionY(float posY) { positionY = posY; }
 
-    Vector GetVelocity() const { return velocity; }
-    void SetVelocity(Vector velocity) { this->velocity = velocity; }
+    float GetWidth() const { return width; }
+    void SetWidth(float width) { this->width = width; }
+
+    float GetHeight() const { return height; }
+    void SetHeight(float height) { this->height = height; }
+
+   
 };
 
 #endif

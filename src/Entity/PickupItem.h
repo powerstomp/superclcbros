@@ -11,8 +11,8 @@ protected:
 
 public:
     PickupItem();
-    PickupItem(Point position, Dimension size, int value, const std::string& effect)
-        : Entity(position, size), value(value), effect(effect) {}
+    PickupItem(float posX, float posY, float width, float height, int value, const std::string& effect)
+        : Entity(posX, posY, width, height), value(value), effect(effect) {}
 
     // Override methods
     void Update() override;
@@ -30,8 +30,8 @@ public:
 class Coin : public PickupItem {
 public:
     Coin();
-    Coin(Point position, Dimension size, int value)
-        : PickupItem(position, size, value, "score") {}
+    Coin(float posX, float posY, float width, float height, int value, const std::string& effect)
+        : PickupItem(posX, posY, width, height, value, effect) {}
 
     void Collect(std::shared_ptr<Player> collector) override;
 };
@@ -42,8 +42,8 @@ private:
 
 public:
     PowerUpItem();
-    PowerUpItem(Point position, Dimension size, int value, const std::string& effect, int duration)
-        : PickupItem(position, size, value, effect), duration(duration) {}
+    PowerUpItem(float posX, float posY, float width, float height, int value, const std::string& effect, int duration)
+        : PickupItem(posX, posY, width, height, value, effect), duration(duration) {}
 
     void Collect(std::shared_ptr<Player> collector) override;
     int GetDuration() const { return duration; }

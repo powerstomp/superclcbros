@@ -11,8 +11,8 @@ private:
 
 public:
     Player();
-    Player(Point position, Dimension size, int health, int lives)
-        : Entity(position, size), health(health), lives(lives), state("normal") {}
+    Player(float posX, float posY, float width, float height, int health, int lives, const std::string& state)
+        : Entity(posX, posY, width, height), health(health), lives(lives), state(state) {}
 
     // Override methods
     void Update() override;
@@ -20,7 +20,7 @@ public:
     void OnCollide(std::shared_ptr<Entity> other) override;
 
     // Unique Player methods
-    void Move(Vector direction);
+    void Move(float vectorX, float vectorY);
     void Jump();
     void TakeDamage(int damage);
     

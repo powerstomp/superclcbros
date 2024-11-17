@@ -12,8 +12,8 @@ protected:
 
 public:
     Enemy();
-    Enemy(Point position, Dimension size, int damage, float speed, bool isAggressive)
-        : Entity(position, size), damage(damage), speed(speed), isAggressive(isAggressive) {}
+    Enemy(float posX, float posY, float width, float height, int damage, float speed, bool isAggressive)
+        : Entity(posX, posY, width, height), damage(damage), speed(speed), isAggressive(isAggressive) {}
 
     virtual void Behavior(std::shared_ptr<Player> player) = 0;
     void attack(std::shared_ptr<Player> player);
@@ -27,8 +27,8 @@ public:
 class Goomba : public Enemy {
 public:
     Goomba();
-    Goomba(Point position, Dimension size, int damage, float speed, bool isAggressive)
-        : Enemy(position, size, damage, speed, isAggressive) {}
+    Goomba(float posX, float posY, float width, float height, int damage, float speed, bool isAggressive)
+        : Enemy(posX, posY, width, height, damage, speed, isAggressive) {}
 
     void Behavior(std::shared_ptr<Player> player) override;
 };
@@ -36,8 +36,8 @@ public:
 class Koopa : public Enemy {
 public:
     Koopa();
-    Koopa(Point position, Dimension size, int damage, float speed, bool isAggressive)
-        : Enemy(position, size, damage, speed, isAggressive) {}
+    Koopa(float posX, float posY, float width, float height, int damage, float speed, bool isAggressive)
+        : Enemy(posX, posY, width, height, damage, speed, isAggressive) {}
 
     void Behavior(std::shared_ptr<Player> player) override;
 };
