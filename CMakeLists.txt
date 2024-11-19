@@ -31,7 +31,7 @@ add_executable(superclcbros
 	src/Entity/Player.cpp
 	src/Entity/Mario.cpp
 
-	src/Utility/TextureManager.cpp
+	src/Utility/SoundManager.cpp
 	src/Utility/Animation.cpp)
 
 target_link_libraries(superclcbros PRIVATE
