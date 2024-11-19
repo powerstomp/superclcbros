@@ -21,12 +21,13 @@ int main() {
 
 	std::cout << "Services initialized.\n";
 
-	std::thread soundManagerThread([&soundManager =
-										ServiceLocator<SoundManager>::Get()]() mutable {
-		soundManager.Update();
+	std::thread([&soundManager = ServiceLocator<SoundManager>::Get()]() mutable {
+		while (true) {
+			soundManager.Update();
 
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-	});
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+		}
+	}).detach();
 	std::cout << "Audio update thread started.\n";
 
 	auto game = std::make_unique<Game>();
