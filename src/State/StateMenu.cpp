@@ -1,10 +1,12 @@
 #include "StateMenu.h"
 
 #include <SFML/Graphics/Font.hpp>
-#include <iostream>
+#include <SFML/System/Vector2.hpp>
 
-StateMenu::StateMenu(Game* game) : game{game} {
-	titleText.setFont(game->GetFont());
+#include "../Utility/ServiceLocator.h"
+
+StateMenu::StateMenu(Game* game) : game{game}, mario{Mario(sf::Vector2f(200, 0))} {
+	titleText.setFont(ServiceLocator<sf::Font>::Get());
 	titleText.setString("Super CLC Bros");
 	titleText.setCharacterSize(50);
 	titleText.setFillColor(sf::Color::White);
@@ -17,10 +19,12 @@ void StateMenu::OnEnter() {
 	game->window.setView(game->window.getDefaultView());
 }
 void StateMenu::Update() {
+	mario.Update();
 }
 
 void StateMenu::Render(double deltaTime) {
 	game->window.draw(titleText);
+	game->window.draw(*mario.GetSprite());
 }
 void StateMenu::OnSFMLEvent(const sf::Event& event) {
 	// if (event.type == event.KeyPressed)

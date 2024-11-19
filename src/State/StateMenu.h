@@ -2,6 +2,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/View.hpp>
 
+#include "../Entity/Mario.h"
 #include "../Game.h"
 #include "State.h"
 
@@ -9,6 +10,7 @@ class StateMenu : public State {
 private:
 	Game* game;
 	sf::Text titleText;
+	Mario mario;
 
 public:
 	StateMenu(Game*);

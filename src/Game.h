@@ -12,7 +12,6 @@
 
 class Game {
 private:
-	sf::Font font;
 	std::stack<std::unique_ptr<State>> states;
 
 	void Update();
@@ -30,8 +29,6 @@ public:
 	State& GetState();
 	void PopState();
 	void PushState(std::unique_ptr<State>);
-
-	const sf::Font& GetFont() const;
 };
 
 #endif

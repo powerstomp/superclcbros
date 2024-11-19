@@ -17,9 +17,6 @@
 Game::Game() : window(sf::VideoMode(800, 600), "Super CLC Bros") {
 	window.setFramerateLimit(144);
 
-	if (!font.loadFromFile("assets/font2.ttf"))
-		throw std::runtime_error("Can't load font.");
-
 	PushState(std::make_unique<StateMenu>(this));
 
 	std::cout << "Game initialized.\n";
@@ -84,8 +81,4 @@ void Game::PushState(std::unique_ptr<State> state) {
 		GetState().OnExit();
 	states.push(std::move(state));
 	GetState().OnEnter();
-}
-
-const sf::Font& Game::GetFont() const {
-	return font;
 }
