@@ -1,43 +1,28 @@
 #ifndef _ENTITY_H
 #define _ENTITY_H
 
-#include <string>
-#include <memory>
-
-
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector2.hpp>
 
 class Entity {
 protected:
-    float positionX;
-    float positionY;
-    float width;
-    float height;
-    bool isActive;
+	sf::Vector2f position;
 
 public:
-    Entity();
-    Entity(float posX, float posY, float width, float height)
-        : positionX(posX), positionY(posY), width(width), height(height), isActive(true) {}
-    virtual ~Entity() = default;
+	Entity(sf::Vector2f position);
 
-    virtual void Update() = 0;
-    virtual void Render(double deltaTime) = 0;
-    virtual void OnCollide(std::shared_ptr<Entity> other) = 0;
+	virtual ~Entity() = default;
+	Entity(const Entity&) = default;
+	Entity& operator=(const Entity&) = default;
+	Entity(Entity&&) = default;
+	Entity& operator=(Entity&&) = default;
 
-    // Getters and setters
-    float GetPositionX() const { return positionX; }
-    void SetPositionX(float posX) { positionX = posX; }
+	virtual void Update() = 0;
 
-    float GetPositionY() const { return positionY; }
-    void SetPositionY(float posY) { positionY = posY; }
-
-    float GetWidth() const { return width; }
-    void SetWidth(float width) { this->width = width; }
-
-    float GetHeight() const { return height; }
-    void SetHeight(float height) { this->height = height; }
-
-   
+	sf::Vector2f GetPosition() const;
+	sf::FloatRect GetBoundingBox() const;
+	virtual const sf::Sprite* const GetSprite() const = 0;
 };
 
 #endif

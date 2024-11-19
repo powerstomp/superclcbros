@@ -27,7 +27,12 @@ add_executable(superclcbros
 
 	src/State/StateMenu.cpp
 
-	src/Utility/TextureManager.cpp)
+	src/Entity/Entity.cpp
+	src/Entity/Player.cpp
+	src/Entity/Mario.cpp
+
+	src/Utility/TextureManager.cpp
+	src/Utility/Animation.cpp)
 
 target_link_libraries(superclcbros PRIVATE
 	sfml-graphics
