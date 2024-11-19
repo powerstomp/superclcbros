@@ -20,6 +20,7 @@ Mario::Mario(sf::Vector2f position)
 }
 void Mario::Update() {
 	animationRunning.Update(sprite);
+	sprite.setScale(1.5, 1.5);
 	sprite.setPosition(GetPosition());
 }
 

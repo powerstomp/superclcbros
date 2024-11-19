@@ -2,10 +2,12 @@
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 #include "../Utility/ServiceLocator.h"
+#include "StatePlay.h"
 
-StateMenu::StateMenu(Game* game) : game{game}, mario{Mario(sf::Vector2f(200, 0))} {
+StateMenu::StateMenu(Game* game) : game{game} {
 	titleText.setFont(ServiceLocator<sf::Font>::Get());
 	titleText.setString("Super CLC Bros");
 	titleText.setCharacterSize(50);
@@ -19,14 +21,13 @@ void StateMenu::OnEnter() {
 	game->window.setView(game->window.getDefaultView());
 }
 void StateMenu::Update() {
-	mario.Update();
 }
 
 void StateMenu::Render(double deltaTime) {
 	game->window.draw(titleText);
-	game->window.draw(*mario.GetSprite());
 }
 void StateMenu::OnSFMLEvent(const sf::Event& event) {
-	// if (event.type == event.KeyPressed)
-	// game->PushState(std::make_unique<StatePlay>(game));
+	if (event.type == event.KeyPressed)
+		if (event.key.code == sf::Keyboard::Key::Enter)
+			game->PushState(std::make_unique<StatePlay>(game));
 }

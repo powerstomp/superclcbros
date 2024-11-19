@@ -2,16 +2,19 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/View.hpp>
 
+#include "../Entity/Mario.h"
+#include "../Entity/TileMap.h"
 #include "../Game.h"
 #include "State.h"
 
-class StateMenu : public State {
+class StatePlay : public State {
 private:
 	Game* game;
-	sf::Text titleText;
+	TileMap tilemap;
+	Mario mario;
 
 public:
-	StateMenu(Game*);
+	StatePlay(Game*);
 
 	virtual void OnEnter() override;
 	virtual void Update() override;

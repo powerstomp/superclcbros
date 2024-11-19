@@ -26,10 +26,12 @@ add_executable(superclcbros
 	src/Game.cpp
 
 	src/State/StateMenu.cpp
+	src/State/StatePlay.cpp
 
 	src/Entity/Entity.cpp
 	src/Entity/Player.cpp
 	src/Entity/Mario.cpp
+	src/Entity/TileMap.cpp
 
 	src/Utility/SoundManager.cpp
 	src/Utility/Animation.cpp)

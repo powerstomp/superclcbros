@@ -9,12 +9,11 @@
 #include <cassert>
 #include <iostream>
 #include <memory>
-#include <stdexcept>
 
 #include "Definitions.h"
 #include "State/StateMenu.h"
 
-Game::Game() : window(sf::VideoMode(800, 600), "Super CLC Bros") {
+Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Super CLC Bros") {
 	window.setFramerateLimit(144);
 
 	PushState(std::make_unique<StateMenu>(this));
