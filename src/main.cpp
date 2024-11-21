@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "Game.h"
+#include "Utility/AnimationManager.h"
 #include "Utility/MusicManager.h"
 #include "Utility/ServiceLocator.h"
 #include "Utility/SoundManager.h"
@@ -14,10 +15,16 @@ int main() {
 	ServiceLocator<TextureManager>::Set(std::make_unique<TextureManager>());
 	ServiceLocator<SoundManager>::Set(std::make_unique<SoundManager>());
 	ServiceLocator<MusicManager>::Set(std::make_unique<MusicManager>());
+
 	auto font = std::make_unique<sf::Font>();
 	if (!font->loadFromFile("assets/font2.ttf"))
 		throw std::runtime_error("Can't load font.");
 	ServiceLocator<sf::Font>::Set(std::move(font));
+
+	auto animationManager = std::make_unique<AnimationManager>();
+	if (!animationManager->Load("assets/animations.txt"))
+		throw std::runtime_error("Can't load animations.");
+	ServiceLocator<AnimationManager>::Set(std::move(animationManager));
 
 	std::cout << "Services initialized.\n";
 

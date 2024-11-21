@@ -4,8 +4,11 @@
 #include <initializer_list>
 #include <stdexcept>
 
-Animation::Animation(std::initializer_list<Frame> frames) : frames{frames} {
-	if (frames.size() == 0)
+Animation::Animation(std::initializer_list<Frame> frames)
+	: Animation(std::list<Frame>(frames)) {
+}
+Animation::Animation(std::list<Frame> frames) : frames{std::move(frames)} {
+	if (this->frames.size() == 0)
 		throw std::invalid_argument("Empty animation.");
 	Reset();
 }

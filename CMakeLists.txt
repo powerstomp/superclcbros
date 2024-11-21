@@ -34,6 +34,7 @@ add_executable(superclcbros
 	src/Entity/TileMap.cpp
 
 	src/Utility/SoundManager.cpp
+	src/Utility/AnimationManager.cpp
 	src/Utility/Animation.cpp)
 
 target_link_libraries(superclcbros PRIVATE

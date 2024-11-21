@@ -19,6 +19,7 @@ private:
 
 public:
 	Animation(std::initializer_list<Frame>);
+	Animation(std::list<Frame>);
 	void Reset();
 	void Update(sf::Sprite&);
 };
