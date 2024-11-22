@@ -6,7 +6,9 @@
 enum PlayerModifier {
 	NORMAL,
 	LARGE,
-	FIREPOWER
+	FIREPOWER,
+
+	MAX
 };
 
 class Player : public Entity {
@@ -15,6 +17,8 @@ protected:
 
 public:
 	Player(sf::Vector2f position);
+
+	virtual void Update() override;
 };
 
 #endif

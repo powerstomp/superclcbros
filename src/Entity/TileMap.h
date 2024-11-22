@@ -39,6 +39,8 @@ private:
 	int GetHeight() const;
 	int GetWidth() const;
 
+	static sf::Vector2f GetTileTexturePosition(int x, int y);
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 public:
@@ -48,6 +50,7 @@ public:
 	TileType GetTile(int x, int y) const;
 
 	static sf::Vector2f GetTilePosition(int x, int y);
+	static sf::FloatRect GetTileBoundingBox(int x, int y);
 };
 
 #endif

@@ -2,7 +2,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/View.hpp>
 
-#include "../Entity/Mario.h"
+#include "../Entity/EntityManager.h"
 #include "../Entity/TileMap.h"
 #include "../Game.h"
 #include "State.h"
@@ -11,7 +11,7 @@ class StatePlay : public State {
 private:
 	Game* game;
 	TileMap tilemap;
-	Mario mario;
+	EntityManager entityManager;
 
 public:
 	StatePlay(Game*);

@@ -1,13 +1,23 @@
 #ifndef _ENTITY_H
 #define _ENTITY_H
 
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Transformable.hpp>
 #include <SFML/System/Vector2.hpp>
 
-class Entity {
+class Entity : public sf::Drawable, public sf::Transformable {
+	friend class EntityManager;
+
 protected:
+	sf::Sprite sprite;
 	sf::Vector2f position;
+	sf::Vector2f velocity;
+
+	bool isOnGround = false;
+
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 public:
 	Entity(sf::Vector2f position);
@@ -22,7 +32,6 @@ public:
 
 	sf::Vector2f GetPosition() const;
 	sf::FloatRect GetBoundingBox() const;
-	virtual const sf::Sprite* const GetSprite() const = 0;
 };
 
 #endif

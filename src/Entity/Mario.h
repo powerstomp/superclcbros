@@ -8,14 +8,11 @@
 
 class Mario : public Player {
 private:
-	Animation animationStanding;
 	Animation animationRunning;
-	sf::Sprite sprite;
 
 public:
 	Mario(sf::Vector2f position);
-	void Update() override;
-	const sf::Sprite* const GetSprite() const override;
+	virtual void Update() override;
 };
 
 #endif

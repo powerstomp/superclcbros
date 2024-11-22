@@ -1,5 +1,7 @@
 #include "Tilemap.h"
 
+#include <iostream>
+
 int TileMap::GetHeight() const {
 	return tiles.size();
 }
@@ -33,20 +35,31 @@ void TileMap::SetTile(TileType type, int x, int y) {
 	int index = (x + y * GetWidth()) * 4;
 	sf::Vertex* quad = &vertices[index];
 
-	quad[0].position = GetTilePosition(x, y);
-	quad[1].position = GetTilePosition(x + 1, y);
-	quad[2].position = GetTilePosition(x + 1, y + 1);
-	quad[3].position = GetTilePosition(x, y + 1);
+	quad[0].position = GetTileTexturePosition(x, y);
+	quad[1].position = GetTileTexturePosition(x + 1, y);
+	quad[2].position = GetTileTexturePosition(x + 1, y + 1);
+	quad[3].position = GetTileTexturePosition(x, y + 1);
 
 	quad[0].texCoords = texCoords;
-	quad[1].texCoords = texCoords + GetTilePosition(1, 0);
-	quad[2].texCoords = texCoords + GetTilePosition(1, 1);
-	quad[3].texCoords = texCoords + GetTilePosition(0, 1);
+	quad[1].texCoords = texCoords + GetTileTexturePosition(1, 0);
+	quad[2].texCoords = texCoords + GetTileTexturePosition(1, 1);
+	quad[3].texCoords = texCoords + GetTileTexturePosition(0, 1);
+
+	tiles[y][x] = type;
 }
 TileType TileMap::GetTile(int x, int y) const {
-	return tiles[x][y];
+	if (x < 0 || y < 0 || x >= GetWidth() || y >= GetHeight())
+		return TileType::NONE;
+	return tiles[y][x];
+}
+
+sf::Vector2f TileMap::GetTileTexturePosition(int x, int y) {
+	return sf::Vector2f(x * TILE_TEXTURE_SIZE, y * TILE_TEXTURE_SIZE);
 }
 
 sf::Vector2f TileMap::GetTilePosition(int x, int y) {
-	return sf::Vector2f(x * TILE_TEXTURE_SIZE, y * TILE_TEXTURE_SIZE);
+	return sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
+}
+sf::FloatRect TileMap::GetTileBoundingBox(int x, int y) {
+	return sf::FloatRect(GetTilePosition(x, y), GetTilePosition(1, 1));
 }

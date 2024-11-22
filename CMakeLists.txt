@@ -28,6 +28,7 @@ add_executable(superclcbros
 	src/State/StateMenu.cpp
 	src/State/StatePlay.cpp
 
+	src/Entity/EntityManager.cpp
 	src/Entity/Entity.cpp
 	src/Entity/Player.cpp
 	src/Entity/Mario.cpp

@@ -9,18 +9,13 @@
 
 Mario::Mario(sf::Vector2f position)
 	: Player(position),
-	  sprite{ServiceLocator<TextureManager>::Get().GetOrLoad("assets/mario.png")},
 	  animationRunning{ServiceLocator<AnimationManager>::Get().Get("large_mario_running")
-	  },
-	  animationStanding{ServiceLocator<AnimationManager>::Get().Get("large_mario_standing"
-	  )} {
+	  } {
+	this->sprite =
+		sf::Sprite(ServiceLocator<TextureManager>::Get().GetOrLoad("assets/mario.png"));
+	this->sprite.scale(3, 3);
 }
 void Mario::Update() {
+	Player::Update();
 	animationRunning.Update(sprite);
-	sprite.setScale(1.5, 1.5);
-	sprite.setPosition(GetPosition());
-}
-
-const sf::Sprite* const Mario::GetSprite() const {
-	return &sprite;
 }
