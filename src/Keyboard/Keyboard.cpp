@@ -10,25 +10,22 @@ Keyboard::Keyboard() {
 }
 
 void Keyboard::BindKey(sf::Keyboard::Key key, Action action) {
-    // delete the key binding if it already exists
-    for (auto it = keyMap.begin(); it != keyMap.end(); ++it) {
-        if (it->second == action) {
-            keyMap.erase(it);
-            break;
-        }
-    }
-
-    // Add the new key binding
     keyMap[key] = action;
 }
 
+void Keyboard::UnbindKey(sf::Keyboard::Key key) {
+    keyMap.erase(key);
+}
+
 void Keyboard::HandleKeyPress(sf::Keyboard::Key key) {
-    // Find the action associated with the key
+  
     auto it = keyMap.find(key);
-    if (it != keyMap.end()) {
-        // Emit the action signal
-        onAction.Emit(it->second);
+    if(it == keyMap.end()) {
+        return;
     }
+
+
+    onAction[static_cast<size_t>(it->second)].Emit();
 }
 
 void Keyboard::SaveKeyBindings(const std::string& filePath) {
