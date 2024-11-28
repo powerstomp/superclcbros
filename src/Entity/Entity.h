@@ -7,7 +7,7 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/System/Vector2.hpp>
 
-class Entity : public sf::Drawable, public sf::Transformable {
+class Entity : public sf::Drawable {
 	friend class PhysicsEngine;
 
 protected:

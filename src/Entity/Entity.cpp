@@ -14,6 +14,5 @@ sf::FloatRect Entity::GetBoundingBox() const {
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	states.transform *= getTransform();
 	target.draw(sprite, states);
 }
