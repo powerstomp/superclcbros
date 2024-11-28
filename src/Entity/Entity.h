@@ -12,7 +12,6 @@ class Entity : public sf::Drawable, public sf::Transformable {
 
 protected:
 	sf::Sprite sprite;
-	sf::Vector2f position;
 	sf::Vector2f velocity;
 
 	bool isOnGround = false;

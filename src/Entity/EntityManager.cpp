@@ -13,10 +13,13 @@ void EntityManager::AddEntity(std::unique_ptr<Entity> entity) {
 	entities.push_back(std::move(entity));
 }
 void EntityManager::RemoveEntity(const Entity* entity) {
-	// auto it = std::find(entities.begin(), entities.end(), entity);
-	// if (it == entities.end())
-	// 	throw std::invalid_argument("Can't remove unregistered entity.");
-	// entities.erase(it);
+	for (auto it = entities.begin(); it != entities.end(); it++) {
+		if (it->get() == entity) {
+			entities.erase(it);
+			break;
+		}
+	}
+	throw std::invalid_argument("Can't remove unregistered entity.");
 }
 
 // TODO: All entities should have at least one sprite attached
@@ -24,12 +27,12 @@ void EntityManager::Update(TileMap& tileMap) {
 	for (auto& entity : entities) {
 		entity->Update();
 		entity->velocity.y += 1.25;
-		entity->position += entity->velocity;
 		entity->isOnGround = false;
 
 		auto entityBB = entity->GetBoundingBox();
-		entityBB.left = entity->position.x;
-		entityBB.top = entity->position.y;
+		entityBB.left += entity->velocity.x;
+		entityBB.top += entity->velocity.y;
+
 		const int minTileX = entityBB.left / TILE_SIZE,
 				  maxTileX = (entityBB.left + entityBB.width) / TILE_SIZE;
 		const int minTileY = entityBB.top / TILE_SIZE,
@@ -91,7 +94,6 @@ void EntityManager::Update(TileMap& tileMap) {
 						entity->isOnGround = true;
 					} else
 						entityBB.top += overlapY;
-					// entity->velocity.y = 0;
 					if (isCorner)
 						entity->velocity.y *= 0.7;
 					else
@@ -99,7 +101,6 @@ void EntityManager::Update(TileMap& tileMap) {
 				}
 			}
 		}
-		entity->position = entityBB.getPosition();
-		entity->sprite.setPosition(entity->GetPosition());
+		entity->sprite.setPosition(entityBB.getPosition());
 	}
 }
