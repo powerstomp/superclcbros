@@ -12,6 +12,7 @@ private:
 	Game* game;
 	TileMap tilemap;
 	EntityManager entityManager;
+	PhysicsEngine physicsEngine;
 
 public:
 	StatePlay(Game*);

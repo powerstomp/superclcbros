@@ -7,12 +7,11 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/System/Vector2.hpp>
 
-class Entity : public sf::Drawable, public sf::Transformable {
-	friend class EntityManager;
+class Entity : public sf::Drawable {
+	friend class PhysicsEngine;
 
 protected:
 	sf::Sprite sprite;
-	sf::Vector2f position;
 	sf::Vector2f velocity;
 
 	bool isOnGround = false;
@@ -21,7 +20,6 @@ protected:
 
 public:
 	Entity(sf::Vector2f position);
-
 	virtual ~Entity() = default;
 	Entity(const Entity&) = default;
 	Entity& operator=(const Entity&) = default;

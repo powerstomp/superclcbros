@@ -29,6 +29,7 @@ add_executable(superclcbros
 	src/State/StatePlay.cpp
 
 	src/Entity/EntityManager.cpp
+	src/Entity/PhysicsEngine.cpp
 	src/Entity/Entity.cpp
 	src/Entity/Player.cpp
 	src/Entity/Mario.cpp
@@ -36,7 +37,9 @@ add_executable(superclcbros
 
 	src/Utility/SoundManager.cpp
 	src/Utility/AnimationManager.cpp
-	src/Utility/Animation.cpp)
+	src/Utility/Animation.cpp
+
+	src/Keyboard/Keyboard.cpp)
 
 target_link_libraries(superclcbros PRIVATE
 	sfml-graphics

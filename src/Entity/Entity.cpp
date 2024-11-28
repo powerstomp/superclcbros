@@ -2,17 +2,17 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-Entity::Entity(sf::Vector2f position) : position{position} {
+Entity::Entity(sf::Vector2f position) {
+	sprite.setPosition(position);
 }
 
 sf::Vector2f Entity::GetPosition() const {
-	return position;
+	return sprite.getPosition();
 }
 sf::FloatRect Entity::GetBoundingBox() const {
 	return sprite.getGlobalBounds();
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	states.transform *= getTransform();
 	target.draw(sprite, states);
 }

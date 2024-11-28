@@ -22,7 +22,7 @@ void StatePlay::OnEnter() {
 	game->window.setView(game->window.getDefaultView());
 }
 void StatePlay::Update() {
-	entityManager.Update(tilemap);
+	entityManager.Update(physicsEngine, tilemap);
 }
 
 void StatePlay::Render(double deltaTime) {
