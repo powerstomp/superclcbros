@@ -1,10 +1,11 @@
-#ifndef SIGNAL_H
-#define SIGNAL_H
+#ifndef _SIGNAL_H
+#define _SIGNAL_H
 
 #include <functional>
 #include <vector>
 
-#include "Slot.h"
+template <typename... Args>
+using Slot = std::function<void(Args...)>;
 
 template <typename... Args>
 class Signal {
@@ -16,5 +17,5 @@ public:
 	void Emit(Args... args) const;
 };
 
-#include "Signal.cpp"
-#endif	// SIGNAL_H
+#include "Signal.inl"
+#endif	// _SIGNAL_H
