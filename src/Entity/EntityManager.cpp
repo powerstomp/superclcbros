@@ -19,14 +19,17 @@ void EntityManager::RemoveEntity(const Entity* entity) {
 	// entities.erase(it);
 }
 
+// TODO: All entities should have at least one sprite attached
 void EntityManager::Update(TileMap& tileMap) {
 	for (auto& entity : entities) {
 		entity->Update();
+		entity->velocity.y += 1.25;
 		entity->position += entity->velocity;
-		entity->sprite.setPosition(entity->GetPosition());
 		entity->isOnGround = false;
 
 		auto entityBB = entity->GetBoundingBox();
+		entityBB.left = entity->position.x;
+		entityBB.top = entity->position.y;
 		const int minTileX = entityBB.left / TILE_SIZE,
 				  maxTileX = (entityBB.left + entityBB.width) / TILE_SIZE;
 		const int minTileY = entityBB.top / TILE_SIZE,
@@ -39,10 +42,6 @@ void EntityManager::Update(TileMap& tileMap) {
 					continue;
 
 				auto tileBB = tileMap.GetTileBoundingBox(x, y);
-				tileBB.width += 2;
-				tileBB.height += 2;
-				tileBB.left -= 1;
-				tileBB.top -= 1;
 				sf::FloatRect intersection;
 				if (!entityBB.intersects(tileBB, intersection))
 					continue;
@@ -54,37 +53,53 @@ void EntityManager::Update(TileMap& tileMap) {
 					std::min(entityBB.top + entityBB.height, tileBB.top + tileBB.height) -
 					std::max(entityBB.top, tileBB.top);
 
-				// Determine the axis of intersection
-				if (overlapX < overlapY) {
-					if (entityBB.left < tileBB.left) {
-						// Intersecting from the left
-						entity->position.x -= overlapX;	 // Push left
-						entity->velocity.x = 0;			 // Stop horizontal movement
-					} else {
-						// Intersecting from the right
-						entity->position.x += overlapX;	 // Push right
-						entity->velocity.x = 0;			 // Stop horizontal movement
-					}
-				} else {
-					if (entityBB.top < tileBB.top) {
-						// Intersecting from the top
-						entity->position.y -= overlapY;	 // Push up
-						entity->isOnGround = true;
-						entity->velocity.y = 0;	 // Stop vertical movement
-					} else {
-						// Intersecting from the bottom
-						entity->position.y += overlapY;	 // Push down
-						entity->velocity.y = 0;			 // Stop vertical movement
-					}
+				if (overlapX < overlapY &&
+					overlapY > std::abs(entity->velocity.y) + 1e-5) {
+					if (entityBB.left < tileBB.left)
+						entityBB.left -= overlapX;
+					else
+						entityBB.left += overlapX;
+					entity->velocity.x = 0;
 				}
-
-				// Update the bounding box after position correction
-				entity->sprite.setPosition(entity->GetPosition());
-				entityBB = entity->GetBoundingBox();
 			}
 		}
+		for (auto x = minTileX; x <= maxTileX; x++) {
+			for (auto y = minTileY; y <= maxTileY; y++) {
+				auto tileType = tileMap.GetTile(x, y);
+				if (tileType == TileType::NONE)
+					continue;
 
-		// Update the entity's sprite position to match its corrected position
+				auto tileBB = tileMap.GetTileBoundingBox(x, y);
+				sf::FloatRect intersection;
+				if (!entityBB.intersects(tileBB, intersection))
+					continue;
+
+				float overlapX =
+					std::min(entityBB.left + entityBB.width, tileBB.left + tileBB.width) -
+					std::max(entityBB.left, tileBB.left);
+				float overlapY =
+					std::min(entityBB.top + entityBB.height, tileBB.top + tileBB.height) -
+					std::max(entityBB.top, tileBB.top);
+
+				bool isCorner =
+					std::abs(overlapX / tileBB.width - overlapY / tileBB.height) < 0.08;
+
+				if (overlapX < overlapY) {
+				} else {
+					if (entityBB.top < tileBB.top) {
+						entityBB.top -= overlapY;
+						entity->isOnGround = true;
+					} else
+						entityBB.top += overlapY;
+					// entity->velocity.y = 0;
+					if (isCorner)
+						entity->velocity.y *= 0.7;
+					else
+						entity->velocity.y = 0;
+				}
+			}
+		}
+		entity->position = entityBB.getPosition();
 		entity->sprite.setPosition(entity->GetPosition());
 	}
 }

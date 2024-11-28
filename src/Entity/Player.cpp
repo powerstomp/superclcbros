@@ -26,8 +26,8 @@ void Player::Update() {
 	if (velocity.x > 10)
 		velocity.x = 10;
 
-	velocity.y += 1.25;
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && isOnGround)
 		velocity.y = -23;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::G) && isOnGround)
+		position.y += 40;
 }
