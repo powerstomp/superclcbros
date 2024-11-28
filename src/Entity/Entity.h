@@ -7,6 +7,17 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/System/Vector2.hpp>
 
+enum class Direction {
+	NONE = -1,
+
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+
+	MAX
+};
+
 class Entity : public sf::Drawable, public sf::Transformable {
 	friend class EntityManager;
 
