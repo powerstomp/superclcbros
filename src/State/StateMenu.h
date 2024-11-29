@@ -20,8 +20,8 @@ protected:
     };
 
     std::vector<MenuItem> items;           
-	size_t selectedItem = 0;
-	void AddMenuItem(std::function<void()> action, sf::Text text);
+	  size_t selectedItem = 0;
+	  void AddMenuItem(std::function<void()> action, sf::Text text);
 
 public:
     StateMenu(Game* game);

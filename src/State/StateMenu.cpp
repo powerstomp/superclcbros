@@ -27,11 +27,16 @@ void StateMenu::Render(double deltaTime) {
 	game->window.draw(titleText);
 
 	for(size_t i = 0; i < items.size(); i++) {
-		items[i].text.setFillColor((i == selectedItem) ? sf::Color::Red : sf::Color::White);
-		items[i].text.setPosition(100, 200 + i * 50);
-		game->window.draw(items[i].text);
+		if(i == selectedItem){
+			items[i].text.setFillColor(sf::Color::Yellow);
+			items[i].text.setScale(1.2f, 1.2f);
+		} else {
+			items[i].text.setFillColor(sf::Color::White);
+			items[i].text.setScale(1.0f, 1.0f);
+		}
 	}
 }
+
 void StateMenu::OnSFMLEvent(const sf::Event& event) {
 	if (event.type == event.KeyPressed)
 		if (event.key.code == sf::Keyboard::Key::Enter)
@@ -42,14 +47,19 @@ void StateMenu::OnSFMLEvent(const sf::Event& event) {
 			selectedItem = (selectedItem == items.size() - 1) ? 0 : selectedItem + 1;
 		else if(event.key.code == sf::Keyboard::Key::Space && items.size() > 0)
 			items[selectedItem].action();
-		
 }
 
 
 
 void StateMenu::AddMenuItem(std::function<void()> action, sf::Text text) {
+	float yOffset = 200.0f + items.size() * 50.0f;
+	auto viewSize = game->window.getDefaultView().getSize();
+    text.setPosition(viewSize.x / 2 - titleText.getGlobalBounds().width / 2, yOffset);
 	items.push_back({action, text});
 }
+
+
+
 
 
 	

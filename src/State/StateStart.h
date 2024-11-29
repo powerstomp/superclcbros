@@ -7,10 +7,7 @@ class StateStart : public StateMenu {
 public:
     StateStart(Game* game);
 
-    virtual void OnEnter() override;
-    virtual void Update() override;
-    virtual void Render(double deltaTime) override;
-    virtual void OnSFMLEvent(const sf::Event& event) override;
+    void OnEnter() override;
 };
 
 #endif
