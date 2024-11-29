@@ -72,8 +72,8 @@ void Game::PopState() {
 		std::cerr << "Tried to pop last game state!\n";
 		return;
 	}
-	GetState().OnEnter();
 	states.pop();
+	GetState().OnEnter();
 }
 void Game::PushState(std::unique_ptr<State> state) {
 	if (!states.empty())
