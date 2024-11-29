@@ -5,9 +5,7 @@
 
 class StateStart : public StateMenu {
 public:
-    StateStart(Game* game);
-
-    void OnEnter() override;
+	StateStart(Game* game);
 };
 
 #endif

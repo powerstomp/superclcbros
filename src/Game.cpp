@@ -11,12 +11,12 @@
 #include <memory>
 
 #include "Definitions.h"
-#include "State/StateMenu.h"
+#include "State/StateStart.h"
 
 Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Super CLC Bros") {
 	window.setFramerateLimit(144);
 
-	PushState(std::make_unique<StateMenu>(this));
+	PushState(std::make_unique<StateStart>(this));
 
 	std::cout << "Game initialized.\n";
 }
@@ -72,6 +72,7 @@ void Game::PopState() {
 		std::cerr << "Tried to pop last game state!\n";
 		return;
 	}
+	GetState().OnExit();
 	states.pop();
 	GetState().OnEnter();
 }

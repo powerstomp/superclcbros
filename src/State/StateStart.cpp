@@ -1,37 +1,15 @@
 #include "StateStart.h"
+
 #include "../Utility/ServiceLocator.h"
+#include "StatePlay.h"
 
-StateStart::StateStart(Game* game) : StateMenu(game) {}
+StateStart::StateStart(Game* game) : StateMenu(game) {
+	sf::Font& font = ServiceLocator<sf::Font>::Get();
 
-void StateStart::OnEnter() {
-    sf::Font& font = ServiceLocator<sf::Font>::Get();
-
-    sf::Text ContinueText("CONTINUE", font, 30);
-    AddMenuItem([this]
-    {
-        // Load game from file
-
-    }, ContinueText);
-
-    sf::Text NewGameText("NEW GAME", font, 30);
-    AddMenuItem([this]
-    {
-        // Start new game
-
-    }, NewGameText);
-
-    sf::Text SettingsText("SETTING", font, 30);
-    AddMenuItem([this]
-    {
-        // Open settings
-
-    }, SettingsText);
-
-    sf::Text ExitText("EXIT", font, 30);
-    AddMenuItem([this]
-    {
-        game->window.close();
-    }, ExitText);
-
-    
+	AddMenuItem(
+		[game]() { game->PushState(std::make_unique<StatePlay>(game)); },
+		sf::Text("Play", font, 30)
+	);
+	AddMenuItem([]() {}, sf::Text("Settings", font, 30));
+	AddMenuItem([game]() { game->window.close(); }, sf::Text("Exit", font, 30));
 }

@@ -26,6 +26,7 @@ add_executable(superclcbros
 	src/Game.cpp
 
 	src/State/StateMenu.cpp
+	src/State/StateStart.cpp
 	src/State/StatePlay.cpp
 
 	src/Entity/EntityManager.cpp
