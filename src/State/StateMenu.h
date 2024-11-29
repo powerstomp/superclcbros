@@ -1,5 +1,5 @@
-#ifndef STATEMENU_H
-#define STATEMENU_H
+#ifndef _STATEMENU_H
+#define _STATEMENU_H
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -15,15 +15,13 @@ protected:
     sf::Text titleText;
 
     struct MenuItem {
-        std::string label;          
-        bool* configValue;           
-        sf::Text text;               
+		std::function<void()> action;
+		sf::Text text;
     };
 
-    std::vector<MenuItem> items;     
-    size_t selectedIndex = 0;       
-
-    void UpdateOption();
+    std::vector<MenuItem> items;           
+	size_t selectedItem = 0;
+	void AddMenuItem(std::function<void()> action, sf::Text text);
 
 public:
     StateMenu(Game* game);
@@ -32,8 +30,7 @@ public:
     virtual void Update() override;
     virtual void Render(double deltaTime) override;
     virtual void OnSFMLEvent(const sf::Event& event) override;
-
-    void AddMenuItem(const std::string& label, bool* configValue);
 };
+
 
 #endif 
