@@ -3,34 +3,34 @@
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
-#include <vector>
 #include <functional>
+#include <vector>
+
 #include "../Game.h"
 #include "State.h"
 
 class StateMenu : public State {
 protected:
-    Game* game;
-    sf::Font font;
-    sf::Text titleText;
+	Game* game;
+	sf::Font font;
+	sf::Text titleText;
 
-    struct MenuItem {
+	struct MenuItem {
 		std::function<void()> action;
 		sf::Text text;
-    };
+	};
 
-    std::vector<MenuItem> items;           
-	  size_t selectedItem = 0;
-	  void AddMenuItem(std::function<void()> action, sf::Text text);
+	std::vector<MenuItem> items;
+	size_t selectedItem = 0;
+	void AddMenuItem(std::function<void()> action, sf::Text text);
 
 public:
-    StateMenu(Game* game);
+	StateMenu(Game* game);
 
-    virtual void OnEnter() override;
-    virtual void Update() override;
-    virtual void Render(double deltaTime) override;
-    virtual void OnSFMLEvent(const sf::Event& event) override;
+	virtual void OnEnter() override;
+	virtual void Update() override;
+	virtual void Render(double deltaTime) override;
+	virtual void OnSFMLEvent(const sf::Event& event) override;
 };
 
-
-#endif 
+#endif
