@@ -85,7 +85,7 @@ void StateMenu::AddMenuItem(bool& value, const std::string& _text) {
 	AddMenuItem(
 		[&value]() mutable { value = !value; },
 		[text = std::string(_text), &value](sf::Text& sfmlText) {
-			sfmlText.setString(text + (value ? " (On)" : "(Off)"));
+			sfmlText.setString(text + (value ? " (On)" : " (Off)"));
 		}
 	);
 }
