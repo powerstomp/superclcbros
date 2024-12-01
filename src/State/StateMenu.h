@@ -11,11 +11,7 @@
 #include "State.h"
 
 class StateMenu : public State {
-protected:
-	Game* game;
-	sf::Font& font;
-	sf::Text titleText;
-
+private:
 	struct MenuItem {
 		std::function<void()> onPress;
 		std::function<void(sf::Text&)> updateDisplay;
@@ -26,6 +22,12 @@ protected:
 	std::size_t selectedItem = 0;
 
 	void UpdateItemDisplay();
+
+protected:
+	Game* game;
+	const sf::Font& font;
+	sf::Text titleText;
+
 	void AddMenuItem(
 		std::function<void()> onPress, std::function<void(sf::Text&)> updateDisplay
 	);
