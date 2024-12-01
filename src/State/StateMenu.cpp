@@ -20,6 +20,8 @@ StateMenu::StateMenu(Game* game) : game{game}, font{ServiceLocator<sf::Font>::Ge
 
 void StateMenu::OnEnter() {
 	game->window.setView(game->window.getDefaultView());
+
+	UpdateItemDisplay();
 }
 void StateMenu::Update() {
 }
