@@ -1,6 +1,7 @@
 #include "Tilemap.h"
 
-#include <iostream>
+#include "../../Utility/ServiceLocator.h"
+#include "../../Utility/TextureManager.h"
 
 int TileMap::GetHeight() const {
 	return tiles.size();

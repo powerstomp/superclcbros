@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 
-#include "../Utility/Animation.h"
+#include "../Animation/Animation.h"
 #include "Player.h"
 
 class Mario : public Player {

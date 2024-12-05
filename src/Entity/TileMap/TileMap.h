@@ -10,9 +10,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <map>
 
-#include "../Definitions.h"
-#include "../Utility/ServiceLocator.h"
-#include "../Utility/TextureManager.h"
+#include "../../Definitions.h"
 
 enum class TileType {
 	NONE,

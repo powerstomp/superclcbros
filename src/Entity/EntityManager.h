@@ -8,7 +8,7 @@
 
 #include "Entity.h"
 #include "PhysicsEngine.h"
-#include "TileMap.h"
+#include "TileMap/TileMap.h"
 
 class EntityManager : public sf::Drawable, public sf::Transformable {
 private:

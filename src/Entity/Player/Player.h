@@ -1,7 +1,7 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 
-#include "Entity.h"
+#include "../Entity.h"
 
 enum PlayerModifier {
 	NORMAL,

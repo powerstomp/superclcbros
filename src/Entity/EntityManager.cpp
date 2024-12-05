@@ -2,13 +2,13 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <iostream>
+#include <stdexcept>
 
 #include "Entity.h"
 
 void EntityManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
-	for (auto& entity : entities)
+	for (const auto& entity : entities)
 		target.draw(*entity, states);
 }
 

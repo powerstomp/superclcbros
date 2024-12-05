@@ -3,9 +3,9 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
-#include "../Utility/AnimationManager.h"
-#include "../Utility/ServiceLocator.h"
-#include "../Utility/TextureManager.h"
+#include "../../Utility/ServiceLocator.h"
+#include "../../Utility/TextureManager.h"
+#include "../Animation/AnimationManager.h"
 
 Mario::Mario(sf::Vector2f position)
 	: Player(position),

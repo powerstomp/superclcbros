@@ -5,7 +5,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-#include "../Entity/Mario.h"
+#include "../Entity/Player/Mario.h"
 
 // TODO: Temporary
 static const char* tileData[] = {

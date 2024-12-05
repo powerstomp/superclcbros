@@ -3,10 +3,6 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <cmath>
-#include <iostream>
-
-#include "../Definitions.h"
-#include "Entity.h"
 
 Player::Player(sf::Vector2f position) : Entity(position) {
 }

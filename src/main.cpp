@@ -4,8 +4,8 @@
 #include <memory>
 #include <thread>
 
+#include "Entity/Animation/AnimationManager.h"
 #include "Game.h"
-#include "Utility/AnimationManager.h"
 #include "Utility/MusicManager.h"
 #include "Utility/ServiceLocator.h"
 #include "Utility/SoundManager.h"
