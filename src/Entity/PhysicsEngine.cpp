@@ -89,8 +89,6 @@ void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
 		entity.velocity.x *= AIR_FRICTION;
 	else
 		entity.velocity.x *= FRICTION;
-	if (std::abs(entity.velocity.x) < 0.6)
-		entity.velocity.x = 0;
 
 	entity.velocity.y += GRAVITY;
 

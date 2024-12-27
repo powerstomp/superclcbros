@@ -55,6 +55,9 @@ void Entity::Jump() {
 }
 
 void Entity::MoveHorizontal(Direction direction) {
+	double acceleration = this->acceleration;
+	if (!IsOnGround())
+		acceleration /= 5;
 	if (direction == Direction::LEFT)
 		velocity.x -= acceleration;
 	else if (direction == Direction::RIGHT)
