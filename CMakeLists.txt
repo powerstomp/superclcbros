@@ -32,13 +32,24 @@ add_executable(superclcbros
 	src/Entity/EntityManager.cpp
 	src/Entity/PhysicsEngine.cpp
 	src/Entity/Entity.cpp
-	src/Entity/Player.cpp
-	src/Entity/Mario.cpp
-	src/Entity/TileMap.cpp
+
+	src/Entity/Player/Player.cpp
+	src/Entity/Player/Mario.cpp
+
+	src/Entity/Controller/PlayerController.cpp
+	src/Entity/Controller/SimpleAIController.cpp
+
+	src/Entity/TileMap/TileMap.cpp
+
+	src/Entity/Animation/Animation.cpp
+	src/Entity/Animation/AnimationManager.cpp
+
+	src/Entity/Animation/AnimationHandler.cpp
+	src/Entity/Animation/IdleAnimationHandler.cpp
+	src/Entity/Animation/JumpAnimationHandler.cpp
+	src/Entity/Animation/WalkAnimationHandler.cpp
 
 	src/Utility/SoundManager.cpp
-	src/Utility/AnimationManager.cpp
-	src/Utility/Animation.cpp
 
 	src/Keyboard/Keyboard.cpp)
 

@@ -1,5 +1,7 @@
 #include "PhysicsEngine.h"
 
+#include <cmath>
+
 #include "Entity.h"
 
 void PhysicsEngine::ResolveMapCollisionHorizontal(
@@ -23,7 +25,7 @@ void PhysicsEngine::ResolveMapCollisionVertical(
 
 	} else if (collisionResult.direction == Direction::DOWN) {
 		entity.sprite.move(0, -collisionResult.overlap.y);
-		entity.isOnGround = true;
+		entity.groundState = EntityGroundState::GROUND;
 	}
 	if (collisionResult.direction == Direction::UP ||
 		collisionResult.direction == Direction::DOWN)
@@ -83,10 +85,24 @@ void PhysicsEngine::HandleMapCollision(
 }
 
 void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
-	entity.velocity.y += 1.25;
+	if (!entity.IsOnGround())
+		entity.velocity.x *= AIR_FRICTION;
+	else
+		entity.velocity.x *= FRICTION;
+	if (std::abs(entity.velocity.x) < 0.6)
+		entity.velocity.x = 0;
+
+	entity.velocity.y += GRAVITY;
+
+	if (entity.velocity.x < -entity.maxSpeed)
+		entity.velocity.x = -entity.maxSpeed;
+	if (entity.velocity.x > entity.maxSpeed)
+		entity.velocity.x = entity.maxSpeed;
+
 	entity.sprite.move(entity.velocity);
 
-	entity.isOnGround = false;
+	if (entity.groundState == EntityGroundState::GROUND)
+		entity.groundState = EntityGroundState::AIR;
 
 	HandleMapCollision(entity, tileMap, ResolveMapCollisionHorizontal);
 	HandleMapCollision(entity, tileMap, ResolveMapCollisionVertical);

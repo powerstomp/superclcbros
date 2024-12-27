@@ -1,20 +1,10 @@
 #ifndef _PHYSICSENGINE_H
 #define _PHYSICSENGINE_H
 
+#include "../Utility/Direction.h"
 #include "TileMap/TileMap.h"
 
 class Entity;
-
-enum class Direction {
-	NONE = -1,
-
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN,
-
-	MAX
-};
 
 struct CollisionResult {
 	Direction direction = Direction::NONE;
@@ -25,6 +15,8 @@ struct CollisionResult {
 class PhysicsEngine {
 private:
 	static constexpr double GRAVITY = 1.25;
+	static constexpr auto FRICTION = 0.92;
+	static constexpr auto AIR_FRICTION = 0.995;
 
 	static CollisionResult GetCollisionResult(
 		const sf::FloatRect& origin, const sf::FloatRect& target

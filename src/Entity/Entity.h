@@ -6,30 +6,62 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <memory>
+
+#include "Animation/AnimationHandler.h"
+#include "Controller/EntityController.h"
+#include "PhysicsEngine.h"
+
+enum class EntityGroundState {
+	GROUND,
+	AIR,
+	JUMPING
+};
 
 class Entity : public sf::Drawable {
+private:
 	friend class PhysicsEngine;
 
-protected:
 	sf::Sprite sprite;
 	sf::Vector2f velocity;
 
-	bool isOnGround = false;
+	double acceleration, maxSpeed;
+	double jumpVelocity;
 
+	EntityGroundState groundState = EntityGroundState::GROUND;
+	Direction facing = Direction::LEFT;
+
+	std::unique_ptr<EntityController> controller;
+	std::list<std::unique_ptr<AnimationHandler>> animations;
+
+	void FlipSprite();
+
+protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+	sf::Sprite& GetSprite();
+	void AddAnimation(std::unique_ptr<AnimationHandler>);
+
 public:
-	Entity(sf::Vector2f position);
+	Entity(
+		sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,
+		double jumpVelocity, std::unique_ptr<EntityController> controller
+	);
 	virtual ~Entity() = default;
-	Entity(const Entity&) = default;
-	Entity& operator=(const Entity&) = default;
+	Entity(const Entity&) = delete;
+	Entity& operator=(const Entity&) = delete;
 	Entity(Entity&&) = default;
 	Entity& operator=(Entity&&) = default;
 
-	virtual void Update() = 0;
+	void Update();
+	void Jump();
+	void MoveHorizontal(Direction);
 
+	Direction GetFacing() const;
 	sf::Vector2f GetPosition() const;
+	sf::Vector2f GetVelocity() const;
 	sf::FloatRect GetBoundingBox() const;
+	bool IsOnGround() const;
 };
 
 #endif

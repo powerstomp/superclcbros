@@ -5,6 +5,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
+#include "../Entity/Controller/PlayerController.h"
 #include "../Entity/Player/Mario.h"
 
 // TODO: Temporary
@@ -15,7 +16,9 @@ static const char* tileData[] = {
 };
 
 StatePlay::StatePlay(Game* game) : game{game}, tilemap(tileData, 16, 12) {
-	entityManager.AddEntity(std::make_unique<Mario>(sf::Vector2f(30, 30)));
+	entityManager.AddEntity(std::make_unique<Mario>(
+		sf::Vector2f(30, 30), std::make_unique<PlayerController>()
+	));
 }
 
 void StatePlay::OnEnter() {

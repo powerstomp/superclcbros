@@ -1,10 +1,37 @@
+mario_death
+3 0 16 15 14
+
+mario_standing
+3 179 0 16 16
+mario_running
+3 89 0 16 16
+3 119 0 16 16
+3 149 0 16 16
+mario_jumping
+3 29 0 16 16
+
 large_mario_standing
 3 180 52 16 32
-
 large_mario_running
 3 90 52 16 32
 3 120 52 16 32
 3 150 52 16 32
-
+large_mario_jumping
+3 30 52 16 32
 large_mario_ducking
 3 0 57 16 22
+large_mario_turning
+3 60 52 16 32
+
+fire_mario_standing
+3 180 122 16 32
+fire_mario_running
+3 102 122 16 32
+3 128 122 16 32
+3 152 122 16 32
+fire_mario_jumping
+3 27 122 16 32
+fire_mario_ducking
+3 0 127 16 22
+fire_mario_turning
+3 52 122 16 32

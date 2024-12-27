@@ -15,10 +15,16 @@ class Player : public Entity {
 protected:
 	PlayerModifier modifier = PlayerModifier::NORMAL;
 
-public:
-	Player(sf::Vector2f position);
+	bool CanUpdateModifier(PlayerModifier) const;
 
-	virtual void Update() override;
+public:
+	Player(
+		sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,
+		double jumpVelocity, std::unique_ptr<EntityController> controller
+	);
+
+	PlayerModifier GetModifier() const;
+	void OnGetModifier(PlayerModifier);
 };
 
 #endif

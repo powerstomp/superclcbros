@@ -6,16 +6,26 @@
 #include "../../Utility/ServiceLocator.h"
 #include "../../Utility/TextureManager.h"
 #include "../Animation/AnimationManager.h"
+#include "../Animation/IdleAnimationHandler.h"
+#include "../Animation/JumpAnimationHandler.h"
+#include "../Animation/WalkAnimationHandler.h"
 
-Mario::Mario(sf::Vector2f position)
-	: Player(position),
-	  animationRunning{ServiceLocator<AnimationManager>::Get().Get("large_mario_running")
-	  } {
-	this->sprite =
+sf::Sprite Mario::GetSprite() {
+	auto sprite =
 		sf::Sprite(ServiceLocator<TextureManager>::Get().GetOrLoad("assets/mario.png"));
-	this->sprite.scale(3, 3);
+	sprite.scale(2.5, 2.5);
+	return sprite;
 }
-void Mario::Update() {
-	Player::Update();
-	animationRunning.Update(sprite);
+
+Mario::Mario(sf::Vector2f position, std::unique_ptr<EntityController> controller)
+	: Player(GetSprite(), position, 1, 10, -23, std::move(controller)) {
+	AddAnimation(std::make_unique<IdleAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("mario_standing")
+	));
+	AddAnimation(std::make_unique<WalkAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("mario_running")
+	));
+	AddAnimation(std::make_unique<JumpAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("mario_jumping")
+	));
 }

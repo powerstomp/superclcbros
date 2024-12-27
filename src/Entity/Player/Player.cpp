@@ -1,27 +1,39 @@
 #include "Player.h"
 
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <cmath>
 
-Player::Player(sf::Vector2f position) : Entity(position) {
+#include "../Controller/PlayerController.h"
+
+Player::Player(
+	sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,
+	double jumpVelocity, std::unique_ptr<EntityController> controller
+)
+	: Entity(
+		  sprite, position, acceleration, maxSpeed, jumpVelocity, std::move(controller)
+	  ) {
 }
 
-void Player::Update() {
-	constexpr auto ACCEL = 1;
+PlayerModifier Player::GetModifier() const {
+	return modifier;
+}
 
-	velocity.x *= 0.90;
+bool Player::CanUpdateModifier(PlayerModifier modifier) const {
+	switch (this->modifier) {
+	case PlayerModifier::NORMAL:
+		if (modifier == PlayerModifier::LARGE)
+			return true;
+	case PlayerModifier::LARGE:
+		if (modifier == PlayerModifier::FIREPOWER)
+			return true;
+	default:
+		return false;
+	}
+}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-		velocity.x += ACCEL;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-		velocity.x -= ACCEL;
-	// velocity.x -= std::copysign(20.0 / TICKS_PER_SECOND, velocity.x);
-	if (velocity.x < -10)
-		velocity.x = -10;
-	if (velocity.x > 10)
-		velocity.x = 10;
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && isOnGround)
-		velocity.y = -23;
+void Player::OnGetModifier(PlayerModifier modifier) {
+	if (CanUpdateModifier(modifier))
+		this->modifier = modifier;
 }

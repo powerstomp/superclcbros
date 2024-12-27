@@ -3,16 +3,14 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 
-#include "../Animation/Animation.h"
 #include "Player.h"
 
 class Mario : public Player {
 private:
-	Animation animationRunning;
+	sf::Sprite GetSprite();
 
 public:
-	Mario(sf::Vector2f position);
-	virtual void Update() override;
+	Mario(sf::Vector2f position, std::unique_ptr<EntityController> controller);
 };
 
 #endif
