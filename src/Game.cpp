@@ -34,7 +34,7 @@ void Game::Run() {
 			static_cast<double>(clock.getElapsedTime().asMicroseconds() - nextTickTime) /
 			TIME_PER_TICK;
 
-		window.clear(sf::Color::Black);
+		window.clear(sf::Color(107, 136, 254));
 		Render(deltaTime);
 		window.display();
 	}

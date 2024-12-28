@@ -4,32 +4,66 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
 
 #include "../Entity/Controller/PlayerController.h"
 #include "../Entity/Player/Mario.h"
+#include "../Utility/CSVMapLoader.h"
+#include "../Utility/ServiceLocator.h"
+#include "../Utility/TextureManager.h"
 
-// TODO: Temporary
-static const char* tileData[] = {
-	"0000000000000000", "0000000002000000", "0000000000000000", "0000000222220000",
-	"0000000000000000", "1111011111110011", "1111001101001001", "1111100100010011",
-	"0000000001000000", "0000000000000000", "1111111100011111", "1111111100010001"
-};
+StatePlay::StatePlay(Game* game, const std::string& mapPath) : game{game} {
+	std::ifstream mapFile(mapPath);
+	if (!mapFile.good())
+		throw std::invalid_argument("Can't load map.");
+	auto mapData = CSV::Parse(mapFile, 12, 300);
 
-StatePlay::StatePlay(Game* game) : game{game}, tilemap(tileData, 16, 12) {
-	entityManager.AddEntity(std::make_unique<Mario>(
+	std::cout << ServiceLocator<TextureManager>::Get()
+					 .GetOrLoad("assets/objects.png")
+					 .getSize()
+					 .x
+			  << '\n';
+
+	auto tileset = Tileset{
+		.texture = ServiceLocator<TextureManager>::Get().GetOrLoad("assets/objects.png"),
+		.tileSize = 16,
+		.n = 6,
+		.m = 22,
+		.margin = 3,
+		.spacing = 1,
+	};
+
+	tilemap = std::make_unique<TileMap>(mapData, 300, 12, tileset);
+
+	auto tmp = std::make_unique<Mario>(
 		sf::Vector2f(30, 30), std::make_unique<PlayerController>()
-	));
+	);
+	player = tmp.get();
+	entityManager.AddEntity(std::move(tmp));
+}
+
+void StatePlay::UpdateView() {
+	sf::Vector2f center = player->GetPosition();
+	center.x = std::max(center.x, view.getSize().x / 2);
+	center.y = view.getSize().y / 2;
+	view.setCenter(center);
+	game->window.setView(view);
 }
 
 void StatePlay::OnEnter() {
-	game->window.setView(game->window.getDefaultView());
+	view = game->window.getDefaultView();
 }
 void StatePlay::Update() {
-	entityManager.Update(physicsEngine, tilemap);
+	entityManager.Update(physicsEngine, *tilemap);
 }
 
 void StatePlay::Render(double deltaTime) {
-	game->window.draw(tilemap);
+	UpdateView();
+
+	game->window.draw(*tilemap);
 	game->window.draw(entityManager);
 }
 void StatePlay::OnSFMLEvent(const sf::Event& event) {

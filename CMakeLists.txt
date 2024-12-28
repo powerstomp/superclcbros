@@ -50,6 +50,7 @@ add_executable(superclcbros
 	src/Entity/Animation/WalkAnimationHandler.cpp
 
 	src/Utility/SoundManager.cpp
+	src/Utility/CSVMapLoader.cpp
 
 	src/Keyboard/Keyboard.cpp)
 
