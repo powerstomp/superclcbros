@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <iterator>
 #include <stdexcept>
 
 #include "Entity.h"
@@ -30,4 +31,7 @@ void EntityManager::Update(PhysicsEngine& physicsEngine, TileMap& tileMap) {
 		entity->Update();
 		physicsEngine.Update(*entity, tileMap);
 	}
+	for (auto it = entities.begin(); it != entities.end(); it++)
+		for (auto it2 = std::next(it); it2 != entities.end(); it2++)
+			physicsEngine.Update(*it->get(), *it2->get());
 }

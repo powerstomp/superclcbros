@@ -6,6 +6,7 @@
 #include "../../Utility/ServiceLocator.h"
 #include "../../Utility/TextureManager.h"
 #include "../Animation/AnimationManager.h"
+#include "../Animation/DeadAnimationHandler.h"
 #include "../Animation/IdleAnimationHandler.h"
 #include "../Animation/JumpAnimationHandler.h"
 #include "../Animation/WalkAnimationHandler.h"
@@ -27,5 +28,8 @@ Mario::Mario(sf::Vector2f position, std::unique_ptr<EntityController> controller
 	));
 	AddAnimation(std::make_unique<JumpAnimationHandler>(
 		ServiceLocator<AnimationManager>::Get().Get("mario_jumping")
+	));
+	AddAnimation(std::make_unique<DeadAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("mario_death")
 	));
 }

@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include "../Controller/PlayerController.h"
+#include "../Enemy/Enemy.h"
 
 Player::Player(
 	sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,
@@ -14,6 +15,22 @@ Player::Player(
 	: Entity(
 		  sprite, position, acceleration, maxSpeed, jumpVelocity, std::move(controller)
 	  ) {
+}
+
+void Player::OnCollide(Entity& entity, Direction direction) {
+	if (auto enemy = dynamic_cast<Enemy*>(&entity)) {
+		if (direction == Direction::DOWN) {
+			enemy->TakeDamage();
+			onHitEnemy.Emit(*enemy);
+		}
+	}
+}
+
+void Player::OnTakeDamage() {
+	if (modifier != PlayerModifier::NORMAL)
+		modifier = PlayerModifier::NORMAL;
+	else
+		SetDead();
 }
 
 PlayerModifier Player::GetModifier() const {

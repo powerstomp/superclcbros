@@ -47,9 +47,7 @@ void TileMap::SetTile(int id, int x, int y) {
 		tileset.margin + sheetColumn * (tileset.tileSize + tileset.spacing),
 		tileset.margin + sheetRow * (tileset.tileSize + tileset.spacing)
 	);
-	if (id == 6)
-		std::cout << id << '\t' << sheetRow << '\t' << sheetColumn << '\t' << texCoords.x
-				  << '\t' << texCoords.y << '\n';
+
 	quad[0].texCoords = texCoords;
 	quad[1].texCoords = texCoords + GetUnscaledTilePosition(1, 0);
 	quad[2].texCoords = texCoords + GetUnscaledTilePosition(1, 1);
@@ -58,6 +56,8 @@ void TileMap::SetTile(int id, int x, int y) {
 	tiles[y][x] = TileType::GROUND;
 }
 TileType TileMap::GetTile(int x, int y) const {
+	if (x <= 0)
+		return TileType::GROUND;
 	if (x < 0 || y < 0 || x >= GetWidth() || y >= GetHeight())
 		return TileType::NONE;
 	return tiles[y][x];

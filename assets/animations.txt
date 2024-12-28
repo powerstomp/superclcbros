@@ -35,3 +35,7 @@ fire_mario_ducking
 3 0 127 16 22
 fire_mario_turning
 3 52 122 16 32
+
+goomba_moving
+3 0 4 16 16
+3 30 4 16 16

@@ -15,7 +15,7 @@ Entity::Entity(
 	  maxSpeed(maxSpeed),
 	  jumpVelocity(jumpVelocity),
 	  controller(std::move(controller)) {
-	sprite.setPosition(position);
+	this->sprite.setPosition(position);
 }
 
 sf::Sprite& Entity::GetSprite() {
@@ -45,6 +45,30 @@ void Entity::Update() {
 	}
 	if (facing == Direction::RIGHT)
 		FlipSprite();
+}
+
+void Entity::SetDead() {
+	isDead = true;
+	velocity.x = 0;
+	velocity.y = 0;
+}
+
+void Entity::OnTakeDamage() {
+	SetDead();
+}
+
+void Entity::TakeDamage() {
+	if (IsDead())
+		return;
+
+	OnTakeDamage();
+	onDamaged.Emit(*this);
+
+	if (IsDead())
+		onDeath.Emit(*this);
+}
+bool Entity::IsDead() const {
+	return isDead;
 }
 
 void Entity::Jump() {

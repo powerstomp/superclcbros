@@ -36,6 +36,9 @@ add_executable(superclcbros
 	src/Entity/Player/Player.cpp
 	src/Entity/Player/Mario.cpp
 
+	src/Entity/Enemy/Enemy.cpp
+	src/Entity/Enemy/Goomba.cpp
+
 	src/Entity/Controller/PlayerController.cpp
 	src/Entity/Controller/SimpleAIController.cpp
 

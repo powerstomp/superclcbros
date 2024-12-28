@@ -8,6 +8,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <memory>
 
+#include "../Observer/Signal.h"
 #include "Animation/AnimationHandler.h"
 #include "Controller/EntityController.h"
 #include "PhysicsEngine.h"
@@ -25,6 +26,8 @@ private:
 	sf::Sprite sprite;
 	sf::Vector2f velocity;
 
+	bool isDead;
+
 	double acceleration, maxSpeed;
 	double jumpVelocity;
 
@@ -41,8 +44,14 @@ protected:
 
 	sf::Sprite& GetSprite();
 	void AddAnimation(std::unique_ptr<AnimationHandler>);
+	virtual void OnCollide(Entity&, Direction) = 0;
+	virtual void OnTakeDamage();
+	void SetDead();
 
 public:
+	Signal<Entity&> onDeath;
+	Signal<Entity&> onDamaged;
+
 	Entity(
 		sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,
 		double jumpVelocity, std::unique_ptr<EntityController> controller
@@ -56,6 +65,9 @@ public:
 	void Update();
 	void Jump();
 	void MoveHorizontal(Direction);
+
+	virtual void TakeDamage();
+	bool IsDead() const;
 
 	Direction GetFacing() const;
 	sf::Vector2f GetPosition() const;

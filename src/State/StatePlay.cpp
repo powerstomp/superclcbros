@@ -10,6 +10,8 @@
 #include <stdexcept>
 
 #include "../Entity/Controller/PlayerController.h"
+#include "../Entity/Controller/SimpleAIController.h"
+#include "../Entity/Enemy/Goomba.h"
 #include "../Entity/Player/Mario.h"
 #include "../Utility/CSVMapLoader.h"
 #include "../Utility/ServiceLocator.h"
@@ -20,12 +22,6 @@ StatePlay::StatePlay(Game* game, const std::string& mapPath) : game{game} {
 	if (!mapFile.good())
 		throw std::invalid_argument("Can't load map.");
 	auto mapData = CSV::Parse(mapFile, 12, 300);
-
-	std::cout << ServiceLocator<TextureManager>::Get()
-					 .GetOrLoad("assets/objects.png")
-					 .getSize()
-					 .x
-			  << '\n';
 
 	auto tileset = Tileset{
 		.texture = ServiceLocator<TextureManager>::Get().GetOrLoad("assets/objects.png"),
@@ -39,15 +35,21 @@ StatePlay::StatePlay(Game* game, const std::string& mapPath) : game{game} {
 	tilemap = std::make_unique<TileMap>(mapData, 300, 12, tileset);
 
 	auto tmp = std::make_unique<Mario>(
-		sf::Vector2f(30, 30), std::make_unique<PlayerController>()
+		sf::Vector2f(200, 100), std::make_unique<PlayerController>()
 	);
 	player = tmp.get();
+	player->onHitEnemy.Connect([](Enemy& entity) {
+		std::cout << "Player hit enemy at X: " << entity.GetPosition().x << '\n';
+	});
 	entityManager.AddEntity(std::move(tmp));
+	entityManager.AddEntity(std::make_unique<Goomba>(
+		sf::Vector2f(500, 100), std::make_unique<SimpleAIController>()
+	));
 }
 
 void StatePlay::UpdateView() {
 	sf::Vector2f center = player->GetPosition();
-	center.x = std::max(center.x, view.getSize().x / 2);
+	center.x = TILE_SIZE + std::max(center.x, view.getSize().x / 2);
 	center.y = view.getSize().y / 2;
 	view.setCenter(center);
 	game->window.setView(view);

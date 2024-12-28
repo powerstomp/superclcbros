@@ -11,13 +11,19 @@ enum PlayerModifier {
 	MAX
 };
 
+class Enemy;
+
 class Player : public Entity {
 protected:
 	PlayerModifier modifier = PlayerModifier::NORMAL;
 
 	bool CanUpdateModifier(PlayerModifier) const;
+	void OnCollide(Entity&, Direction) override;
+	void OnTakeDamage() override;
 
 public:
+	Signal<Enemy&> onHitEnemy;
+
 	Player(
 		sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,
 		double jumpVelocity, std::unique_ptr<EntityController> controller

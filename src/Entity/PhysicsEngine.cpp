@@ -1,6 +1,7 @@
 #include "PhysicsEngine.h"
 
 #include <cmath>
+#include <iostream>
 
 #include "Entity.h"
 
@@ -97,6 +98,9 @@ void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
 	if (entity.velocity.x > entity.maxSpeed)
 		entity.velocity.x = entity.maxSpeed;
 
+	if (entity.velocity.y > TERMINAL_VELOCITY)
+		entity.velocity.y = TERMINAL_VELOCITY;
+
 	entity.sprite.move(entity.velocity);
 
 	if (entity.groundState == EntityGroundState::GROUND)
@@ -104,4 +108,15 @@ void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
 
 	HandleMapCollision(entity, tileMap, ResolveMapCollisionHorizontal);
 	HandleMapCollision(entity, tileMap, ResolveMapCollisionVertical);
+
+	// HandleMapCollision(entity, tileMap, ResolveMapCollisionVertical);
+	// HandleMapCollision(entity, tileMap, ResolveMapCollisionHorizontal);
+}
+
+void PhysicsEngine::Update(Entity& a, Entity& b) {
+	auto collisionResult = GetCollisionResult(a.GetBoundingBox(), b.GetBoundingBox());
+	if (collisionResult.direction == Direction::NONE)
+		return;
+	a.OnCollide(b, collisionResult.direction);
+	b.OnCollide(a, GetOppositeDirection(collisionResult.direction));
 }

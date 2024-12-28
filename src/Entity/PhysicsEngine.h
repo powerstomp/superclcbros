@@ -17,10 +17,8 @@ private:
 	static constexpr double GRAVITY = 1.25;
 	static constexpr auto FRICTION = 0.92;
 	static constexpr auto AIR_FRICTION = 0.995;
+	static constexpr auto TERMINAL_VELOCITY = 25;
 
-	static CollisionResult GetCollisionResult(
-		const sf::FloatRect& origin, const sf::FloatRect& target
-	);
 	static void ResolveMapCollisionHorizontal(Entity&, const CollisionResult&);
 	static void ResolveMapCollisionVertical(Entity&, const CollisionResult&);
 
@@ -32,6 +30,11 @@ private:
 
 public:
 	void Update(Entity& entity, const TileMap& tileMap);
+	void Update(Entity& a, Entity& b);
+
+	static CollisionResult GetCollisionResult(
+		const sf::FloatRect& origin, const sf::FloatRect& target
+	);
 };
 
 #endif
