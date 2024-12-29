@@ -13,3 +13,8 @@ void Signal<Args...>::Emit(Args... args) const {
 		slot(args...);
 	}
 }
+
+template <typename... Args>
+void Signal<Args...>::Reset() {
+	slots.clear();
+}

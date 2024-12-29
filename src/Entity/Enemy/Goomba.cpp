@@ -6,7 +6,9 @@
 #include "../../Utility/ServiceLocator.h"
 #include "../../Utility/TextureManager.h"
 #include "../Animation/AnimationManager.h"
+#include "../Animation/DeadAnimationHandler.h"
 #include "../Animation/IdleAnimationHandler.h"
+#include "../Player/Player.h"
 
 sf::Sprite Goomba::GetSprite() {
 	auto sprite = sf::Sprite(
@@ -21,4 +23,13 @@ Goomba::Goomba(sf::Vector2f position, std::unique_ptr<EntityController> controll
 	AddAnimation(std::make_unique<IdleAnimationHandler>(
 		ServiceLocator<AnimationManager>::Get().Get("goomba_moving")
 	));
+	AddAnimation(std::make_unique<DeadAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("invisible_1px")
+	));
+}
+
+void Goomba::OnCollide(Entity& entity, Direction direction) {
+	if (auto player = dynamic_cast<Player*>(&entity))
+		if (direction != Direction::UP)
+			player->TakeDamage();
 }

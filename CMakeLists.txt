@@ -24,20 +24,28 @@ add_executable(superclcbros
 	src/main.cpp
 
 	src/Game.cpp
+	src/GameState.cpp
 
 	src/State/StateMenu.cpp
 	src/State/StateStart.cpp
 	src/State/StatePlay.cpp
+	src/State/StateSelectStage.cpp
+	src/State/StateSelectPlayer.cpp
 
 	src/Entity/EntityManager.cpp
+	src/Entity/EntityFactory.cpp
 	src/Entity/PhysicsEngine.cpp
 	src/Entity/Entity.cpp
 
 	src/Entity/Player/Player.cpp
 	src/Entity/Player/Mario.cpp
+	src/Entity/Player/Luigi.cpp
 
 	src/Entity/Enemy/Enemy.cpp
 	src/Entity/Enemy/Goomba.cpp
+	src/Entity/Enemy/Piranha.cpp
+
+	src/Entity/Misc/Flag.cpp
 
 	src/Entity/Controller/PlayerController.cpp
 	src/Entity/Controller/SimpleAIController.cpp
@@ -51,6 +59,7 @@ add_executable(superclcbros
 	src/Entity/Animation/IdleAnimationHandler.cpp
 	src/Entity/Animation/JumpAnimationHandler.cpp
 	src/Entity/Animation/WalkAnimationHandler.cpp
+	src/Entity/Animation/DeadAnimationHandler.cpp
 
 	src/Utility/SoundManager.cpp
 	src/Utility/CSVMapLoader.cpp

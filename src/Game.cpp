@@ -11,6 +11,7 @@
 #include <memory>
 
 #include "Definitions.h"
+#include "State/StatePlay.h"
 #include "State/StateStart.h"
 
 Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Super CLC Bros") {
@@ -34,10 +35,17 @@ void Game::Run() {
 			static_cast<double>(clock.getElapsedTime().asMicroseconds() - nextTickTime) /
 			TIME_PER_TICK;
 
-		window.clear(sf::Color(107, 136, 254));
+		window.clear(sf::Color(90, 101, 230));
 		Render(deltaTime);
 		window.display();
 	}
+}
+
+void Game::StartGame(std::string mapPath, std::unique_ptr<GameState> gameState) {
+	if (dynamic_cast<StatePlay*>(&GetState()))
+		PopState();
+	if (gameState->GetLives() > 0)
+		PushState(std::make_unique<StatePlay>(this, std::move(gameState), mapPath));
 }
 
 void Game::Update() {

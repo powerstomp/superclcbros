@@ -1,7 +1,9 @@
 #include <SFML/Audio.hpp>
+#include <SFML/Audio/Music.hpp>
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <thread>
 
 #include "Entity/Animation/AnimationManager.h"
@@ -25,6 +27,11 @@ int main() {
 	if (!animationManager->Load("assets/animations.txt"))
 		throw std::runtime_error("Can't load animations.");
 	ServiceLocator<AnimationManager>::Set(std::move(animationManager));
+
+	auto music = std::make_unique<sf::Music>();
+	if (!music->openFromFile("assets/01-main-theme-overworld.mp3"))
+		throw std::runtime_error("Can't load music.");
+	ServiceLocator<sf::Music>::Set(std::move(music));
 
 	std::cout << "Services initialized.\n";
 

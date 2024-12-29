@@ -24,9 +24,8 @@ private:
 	friend class PhysicsEngine;
 
 	sf::Sprite sprite;
-	sf::Vector2f velocity;
 
-	bool isDead;
+	bool isDead = false;
 
 	double acceleration, maxSpeed;
 	double jumpVelocity;
@@ -40,17 +39,22 @@ private:
 	void FlipSprite();
 
 protected:
+	sf::Vector2f velocity;
+
+	double GetJumpVelocity() const;
+
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	sf::Sprite& GetSprite();
 	void AddAnimation(std::unique_ptr<AnimationHandler>);
 	virtual void OnCollide(Entity&, Direction) = 0;
-	virtual void OnTakeDamage();
+	virtual bool OnTakeDamage();
 	void SetDead();
 
 public:
 	Signal<Entity&> onDeath;
 	Signal<Entity&> onDamaged;
+	Signal<Entity&> onJump;
 
 	Entity(
 		sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,
@@ -66,7 +70,8 @@ public:
 	void Jump();
 	void MoveHorizontal(Direction);
 
-	virtual void TakeDamage();
+	virtual bool TakeDamage();
+	virtual bool Kill();
 	bool IsDead() const;
 
 	Direction GetFacing() const;

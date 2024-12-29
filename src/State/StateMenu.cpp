@@ -8,9 +8,10 @@
 #include "../Utility/ServiceLocator.h"
 #include "StatePlay.h"
 
-StateMenu::StateMenu(Game* game) : game{game}, font{ServiceLocator<sf::Font>::Get()} {
+StateMenu::StateMenu(std::string title, Game* game)
+	: game{game}, font{ServiceLocator<sf::Font>::Get()} {
 	titleText.setFont(font);
-	titleText.setString("Super CLC Bros");
+	titleText.setString(title);
 	titleText.setCharacterSize(50);
 	titleText.setFillColor(sf::Color::White);
 

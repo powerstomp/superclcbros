@@ -21,6 +21,7 @@ void Animation::Update(sf::Sprite& sprite) {
 	for (auto& frame : frames) {
 		if (tmp < frame.duration) {
 			sprite.setTextureRect(frame.dimensions);
+			sprite.setOrigin(0, frame.dimensions.height);
 			return;
 		}
 		tmp -= frame.duration;

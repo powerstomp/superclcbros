@@ -1,18 +1,11 @@
 #include "StateStart.h"
 
-#include "../Utility/ServiceLocator.h"
 #include "StatePlay.h"
+#include "StateSelectStage.h"
 
-StateStart::StateStart(Game* game) : StateMenu(game) {
-	sf::Font& font = ServiceLocator<sf::Font>::Get();
-
+StateStart::StateStart(Game* game) : StateMenu("Super CLC Bros", game) {
 	AddMenuItem(
-		[game]() {
-			game->PushState(
-				std::make_unique<StatePlay>(game, "assets/testLevel._Terrain.csv")
-			);
-		},
-		"Play"
+		[game]() { game->PushState(std::make_unique<StateSelectStage>(game)); }, "Play"
 	);
 	AddMenuItem([]() {}, "Settings");
 	AddMenuItem([game]() { game->window.close(); }, "Exit");

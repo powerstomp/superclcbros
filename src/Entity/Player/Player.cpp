@@ -5,8 +5,8 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <cmath>
 
-#include "../Controller/PlayerController.h"
 #include "../Enemy/Enemy.h"
+#include "../Misc/Flag.h"
 
 Player::Player(
 	sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,
@@ -19,18 +19,29 @@ Player::Player(
 
 void Player::OnCollide(Entity& entity, Direction direction) {
 	if (auto enemy = dynamic_cast<Enemy*>(&entity)) {
-		if (direction == Direction::DOWN) {
-			enemy->TakeDamage();
+		if (direction == Direction::DOWN && enemy->TakeDamage()) {
+			velocity.y = GetJumpVelocity() * 0.2;
 			onHitEnemy.Emit(*enemy);
 		}
-	}
+	} else if (auto flag = dynamic_cast<Flag*>(&entity))
+		onTouchFlag.Emit();
 }
 
-void Player::OnTakeDamage() {
+bool Player::Kill() {
+	if (IsDead())
+		return false;
+	this->modifier = PlayerModifier::NORMAL;
+	return Entity::Kill();
+}
+
+bool Player::OnTakeDamage() {
+	if (IsDead())
+		return false;
 	if (modifier != PlayerModifier::NORMAL)
 		modifier = PlayerModifier::NORMAL;
 	else
 		SetDead();
+	return true;
 }
 
 PlayerModifier Player::GetModifier() const {

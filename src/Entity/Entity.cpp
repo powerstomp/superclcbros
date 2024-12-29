@@ -1,5 +1,6 @@
 #include "Entity.h"
 
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <iostream>
@@ -16,6 +17,7 @@ Entity::Entity(
 	  jumpVelocity(jumpVelocity),
 	  controller(std::move(controller)) {
 	this->sprite.setPosition(position);
+	this->sprite.setTextureRect(sf::IntRect(0, 0, 0, 0));
 }
 
 sf::Sprite& Entity::GetSprite() {
@@ -37,8 +39,13 @@ void Entity::FlipSprite() {
 	sprite.setTextureRect(rect);
 }
 
+double Entity::GetJumpVelocity() const {
+	return jumpVelocity;
+}
+
 void Entity::Update() {
-	controller->Update(*this);
+	if (controller)
+		controller->Update(*this);
 	for (auto& handler : animations) {
 		if (handler->Update(*this, sprite))
 			break;
@@ -53,20 +60,27 @@ void Entity::SetDead() {
 	velocity.y = 0;
 }
 
-void Entity::OnTakeDamage() {
+bool Entity::OnTakeDamage() {
+	if (IsDead())
+		return false;
 	SetDead();
+	return true;
 }
 
-void Entity::TakeDamage() {
-	if (IsDead())
-		return;
+bool Entity::TakeDamage() {
+	if (IsDead() || !OnTakeDamage())
+		return false;
 
-	OnTakeDamage();
 	onDamaged.Emit(*this);
-
 	if (IsDead())
 		onDeath.Emit(*this);
+
+	return true;
 }
+bool Entity::Kill() {
+	return TakeDamage();
+}
+
 bool Entity::IsDead() const {
 	return isDead;
 }
@@ -76,9 +90,12 @@ void Entity::Jump() {
 		return;
 	velocity.y = jumpVelocity;
 	groundState = EntityGroundState::JUMPING;
+	onJump.Emit(*this);
 }
 
 void Entity::MoveHorizontal(Direction direction) {
+	if (IsDead())
+		return;
 	double acceleration = this->acceleration;
 	if (!IsOnGround())
 		acceleration /= 5;

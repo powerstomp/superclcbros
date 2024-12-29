@@ -3,27 +3,45 @@
 #include <SFML/Graphics/View.hpp>
 
 #include "../Entity/EntityManager.h"
+#include "../Entity/Misc/Flag.h"
 #include "../Entity/Player/Player.h"
 #include "../Entity/TileMap/TileMap.h"
 #include "../Game.h"
+#include "../GameState.h"
 #include "State.h"
 
 class StatePlay : public State {
 private:
+	enum class GameProgressState {
+		ONGOING,
+		ENDED,
+		DISPOSABLE
+	};
+	std::string mapPath;
+
+	sf::Text hudText;
+
+	std::unique_ptr<GameState> gameState;
 	Game* game;
 	Player* player;
 	sf::View view;
-	std::unique_ptr<TileMap> tilemap;
+	std::unique_ptr<TileMap> tilemap, backgroundTilemap;
 	EntityManager entityManager;
 	PhysicsEngine physicsEngine;
 
+	GameProgressState progressState = GameProgressState::ONGOING;
+
 private:
+	std::unique_ptr<TileMap> LoadTileMapFromFile(const std::string& path);
+
 	void UpdateView();
+	void UpdateHUD();
 
 public:
-	StatePlay(Game*, const std::string& mapPath);
+	StatePlay(Game*, std::unique_ptr<GameState> gameState, const std::string& mapPath);
 
 	virtual void OnEnter() override;
+	virtual void OnExit() override;
 	virtual void Update() override;
 	virtual void Render(double deltaTime) override;
 	virtual void OnSFMLEvent(const sf::Event&) override;

@@ -33,5 +33,6 @@ void EntityManager::Update(PhysicsEngine& physicsEngine, TileMap& tileMap) {
 	}
 	for (auto it = entities.begin(); it != entities.end(); it++)
 		for (auto it2 = std::next(it); it2 != entities.end(); it2++)
-			physicsEngine.Update(*it->get(), *it2->get());
+			if (!it->get()->IsDead() && !it2->get()->IsDead())
+				physicsEngine.Update(*it->get(), *it2->get());
 }

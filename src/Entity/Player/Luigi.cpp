@@ -1,4 +1,4 @@
-#include "Mario.h"
+#include "Luigi.h"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -11,25 +11,25 @@
 #include "../Animation/JumpAnimationHandler.h"
 #include "../Animation/WalkAnimationHandler.h"
 
-sf::Sprite Mario::GetSprite() {
+sf::Sprite Luigi::GetSprite() {
 	auto sprite =
-		sf::Sprite(ServiceLocator<TextureManager>::Get().GetOrLoad("assets/mario.png"));
+		sf::Sprite(ServiceLocator<TextureManager>::Get().GetOrLoad("assets/luigi.png"));
 	sprite.scale(2.5, 2.5);
 	return sprite;
 }
 
-Mario::Mario(sf::Vector2f position, std::unique_ptr<EntityController> controller)
-	: Player(GetSprite(), position, 1.25, 13, -23, std::move(controller)) {
+Luigi::Luigi(sf::Vector2f position, std::unique_ptr<EntityController> controller)
+	: Player(GetSprite(), position, 1, 10, -26, std::move(controller)) {
 	AddAnimation(std::make_unique<IdleAnimationHandler>(
-		ServiceLocator<AnimationManager>::Get().Get("mario_standing")
+		ServiceLocator<AnimationManager>::Get().Get("luigi_standing")
 	));
 	AddAnimation(std::make_unique<WalkAnimationHandler>(
-		ServiceLocator<AnimationManager>::Get().Get("mario_running")
+		ServiceLocator<AnimationManager>::Get().Get("luigi_running")
 	));
 	AddAnimation(std::make_unique<JumpAnimationHandler>(
-		ServiceLocator<AnimationManager>::Get().Get("mario_jumping")
+		ServiceLocator<AnimationManager>::Get().Get("luigi_jumping")
 	));
 	AddAnimation(std::make_unique<DeadAnimationHandler>(
-		ServiceLocator<AnimationManager>::Get().Get("mario_death")
+		ServiceLocator<AnimationManager>::Get().Get("luigi_death")
 	));
 }

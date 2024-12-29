@@ -8,6 +8,7 @@
 #include <memory>
 #include <stack>
 
+#include "GameState.h"
 #include "State/State.h"
 
 class Game {
@@ -25,6 +26,8 @@ public:
 
 	void Run();
 	bool IsOpen();
+
+	void StartGame(std::string mapPath, std::unique_ptr<GameState> gameState);
 
 	State& GetState();
 	void PopState();

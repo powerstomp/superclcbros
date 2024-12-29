@@ -35,7 +35,7 @@ protected:
 	void AddMenuItem(bool& value, const std::string& text);
 
 public:
-	StateMenu(Game* game);
+	StateMenu(std::string title, Game* game);
 
 	virtual void OnEnter() override;
 	virtual void Update() override;

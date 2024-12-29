@@ -1,5 +1,6 @@
 #include "StatePlay.h"
 
+#include <SFML/Audio/Music.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
@@ -12,15 +13,17 @@
 #include "../Entity/Controller/PlayerController.h"
 #include "../Entity/Controller/SimpleAIController.h"
 #include "../Entity/Enemy/Goomba.h"
+#include "../Entity/EntityFactory.h"
 #include "../Entity/Player/Mario.h"
 #include "../Utility/CSVMapLoader.h"
 #include "../Utility/ServiceLocator.h"
+#include "../Utility/SoundManager.h"
 #include "../Utility/TextureManager.h"
 
-StatePlay::StatePlay(Game* game, const std::string& mapPath) : game{game} {
-	std::ifstream mapFile(mapPath);
+std::unique_ptr<TileMap> StatePlay::LoadTileMapFromFile(const std::string& path) {
+	std::ifstream mapFile(path);
 	if (!mapFile.good())
-		throw std::invalid_argument("Can't load map.");
+		throw std::invalid_argument("Can't load map: " + path);
 	auto mapData = CSV::Parse(mapFile, 12, 300);
 
 	auto tileset = Tileset{
@@ -32,19 +35,72 @@ StatePlay::StatePlay(Game* game, const std::string& mapPath) : game{game} {
 		.spacing = 1,
 	};
 
-	tilemap = std::make_unique<TileMap>(mapData, 300, 12, tileset);
+	return std::make_unique<TileMap>(mapData, 300, 12, tileset);
+}
 
-	auto tmp = std::make_unique<Mario>(
-		sf::Vector2f(200, 100), std::make_unique<PlayerController>()
-	);
-	player = tmp.get();
-	player->onHitEnemy.Connect([](Enemy& entity) {
-		std::cout << "Player hit enemy at X: " << entity.GetPosition().x << '\n';
+StatePlay::StatePlay(
+	Game* game, std::unique_ptr<GameState> gameState, const std::string& mapPath
+)
+	: game{game}, gameState(std::move(gameState)), mapPath(mapPath) {
+	tilemap = LoadTileMapFromFile(mapPath + "_Terrain.csv");
+	backgroundTilemap = LoadTileMapFromFile(mapPath + "_Background.csv");
+
+	std::ifstream entitySpawnFile(mapPath + "_Entities.csv");
+	if (!entitySpawnFile.good())
+		throw std::invalid_argument("Can't load entities map.");
+	auto entityData = CSV::Parse(entitySpawnFile, 12, 300);
+
+	EntityFactory entityFactory(*this, *this->gameState);
+	bool foundPlayer = false, foundFlag = false;
+	for (int i = 0; i < 12; i++) {
+		for (int j = 0; j < 300; j++) {
+			if (entityData[i][j] == -1 || entityData[i][j] == 115 ||
+				entityData[i][j] == 7)
+				continue;
+			auto entity =
+				entityFactory.Create(entityData[i][j], tilemap->GetTilePosition(j, i));
+			if (auto player = dynamic_cast<Player*>(entity.get())) {
+				foundPlayer = true;
+				this->player = player;
+			} else if (dynamic_cast<Flag*>(entity.get()))
+				foundFlag = true;
+			entityManager.AddEntity(std::move(entity));
+		}
+	}
+	if (!foundPlayer)
+		throw std::invalid_argument("Missing player.");
+	if (!foundFlag)
+		throw std::invalid_argument("Missing flag.");
+
+	auto& gameStateRef = *this->gameState;
+	gameStateRef.onGet1UP.Reset();
+
+	player->onHitEnemy.Connect([&gameStateRef](Enemy& entity) {
+		ServiceLocator<SoundManager>::Get().Play("assets/smb_stomp.wav");
+		gameStateRef.CollectScore();
 	});
-	entityManager.AddEntity(std::move(tmp));
-	entityManager.AddEntity(std::make_unique<Goomba>(
-		sf::Vector2f(500, 100), std::make_unique<SimpleAIController>()
-	));
+	player->onJump.Connect([](Entity&) {
+		ServiceLocator<SoundManager>::Get().Play("assets/smb_jump-small.wav");
+	});
+	player->onDeath.Connect([&](Entity&) mutable {
+		ServiceLocator<sf::Music>::Get().stop();
+		ServiceLocator<SoundManager>::Get().Play(
+			"assets/smb_mariodie.wav",
+			[&]() mutable { progressState = GameProgressState::DISPOSABLE; }
+		);
+		gameStateRef.Lose();
+		progressState = GameProgressState::ENDED;
+	});
+	player->onTouchFlag.Connect([]() { std::cout << "I won.\n"; });
+
+	gameStateRef.onGet1UP.Connect([](int lives) {
+		ServiceLocator<SoundManager>::Get().Play("assets/smb_1-up.wav");
+	});
+
+	hudText.setPosition(5, 5);
+	hudText.setFont(ServiceLocator<sf::Font>::Get());
+	hudText.setFillColor(sf::Color::White);
+	hudText.setOutlineColor(sf::Color::Black);
 }
 
 void StatePlay::UpdateView() {
@@ -52,24 +108,59 @@ void StatePlay::UpdateView() {
 	center.x = TILE_SIZE + std::max(center.x, view.getSize().x / 2);
 	center.y = view.getSize().y / 2;
 	view.setCenter(center);
-	game->window.setView(view);
 }
 
 void StatePlay::OnEnter() {
 	view = game->window.getDefaultView();
+	ServiceLocator<sf::Music>::Get().play();
+	gameState->Start();
 }
+
+void StatePlay::OnExit() {
+	ServiceLocator<sf::Music>::Get().stop();
+}
+
 void StatePlay::Update() {
 	entityManager.Update(physicsEngine, *tilemap);
+	if (player->GetPosition().y > WINDOW_HEIGHT + 150 ||
+		gameState->GetTimeRemaining() <= 0)
+		player->Kill();
+	if (progressState == GameProgressState::DISPOSABLE) {
+		if (player->IsDead())
+			game->StartGame(mapPath, std::move(gameState));
+		else
+			game->PopState();
+	}
+}
+
+void StatePlay::UpdateHUD() {
+	hudText.setString(
+		"Lives " + std::to_string(gameState->GetLives()) + " Time " +
+		std::to_string(gameState->GetTimeRemaining()) + " Coins " +
+		std::to_string(gameState->GetScore())
+	);
 }
 
 void StatePlay::Render(double deltaTime) {
 	UpdateView();
 
+	game->window.setView(view);
+	game->window.draw(*backgroundTilemap);
 	game->window.draw(*tilemap);
 	game->window.draw(entityManager);
+
+	UpdateHUD();
+
+	game->window.setView(game->window.getDefaultView());
+	game->window.draw(hudText);
 }
 void StatePlay::OnSFMLEvent(const sf::Event& event) {
-	if (event.type == sf::Event::KeyPressed)
+	if (event.type == sf::Event::KeyPressed) {
+		if (progressState != GameProgressState::ONGOING)
+			return;
 		if (event.key.code == sf::Keyboard::Key::Escape)
 			game->PopState();
+		else if (event.key.code == sf::Keyboard::Key::Tilde)
+			player->Kill();
+	}
 }

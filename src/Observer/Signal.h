@@ -15,6 +15,7 @@ private:
 public:
 	void Connect(const Slot<Args...>& slot);
 	void Emit(Args... args) const;
+	void Reset();
 };
 
 #include "Signal.inl"
