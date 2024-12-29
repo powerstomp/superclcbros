@@ -45,6 +45,9 @@ protected:
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+	virtual bool CanMove() const;
+	virtual bool IsAffectedByGravity() const;
+
 	sf::Sprite& GetSprite();
 	void AddAnimation(std::unique_ptr<AnimationHandler>);
 	virtual void OnCollide(Entity&, Direction) = 0;

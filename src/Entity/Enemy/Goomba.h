@@ -5,7 +5,7 @@
 
 class Goomba : public Enemy {
 private:
-	sf::Sprite GetSprite();
+	sf::Sprite LoadSprite();
 
 protected:
 	void OnCollide(Entity&, Direction) override;

@@ -91,7 +91,8 @@ void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
 	else
 		entity.velocity.x *= FRICTION;
 
-	entity.velocity.y += GRAVITY;
+	if (entity.IsAffectedByGravity())
+		entity.velocity.y += GRAVITY;
 
 	if (entity.velocity.x < -entity.maxSpeed)
 		entity.velocity.x = -entity.maxSpeed;

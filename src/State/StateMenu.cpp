@@ -16,7 +16,7 @@ StateMenu::StateMenu(std::string title, Game* game)
 	titleText.setFillColor(sf::Color::White);
 
 	auto viewSize = game->window.getDefaultView().getSize();
-	titleText.setPosition(viewSize.x / 2 - titleText.getGlobalBounds().width / 2, 50);
+	titleText.setPosition(50, 50);
 }
 
 void StateMenu::OnEnter() {
@@ -71,9 +71,7 @@ void StateMenu::AddMenuItem(
 
 	float yOffset = 200.0f + items.size() * 50.0f;
 	auto viewSize = game->window.getDefaultView().getSize();
-	menuItem.text.setPosition(
-		viewSize.x / 2 - titleText.getGlobalBounds().width / 2, yOffset
-	);
+	menuItem.text.setPosition(50, yOffset);
 
 	menuItem.updateDisplay(menuItem.text);
 	items.push_back(std::move(menuItem));

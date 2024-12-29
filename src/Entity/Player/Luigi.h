@@ -7,7 +7,7 @@
 
 class Luigi : public Player {
 private:
-	sf::Sprite GetSprite();
+	sf::Sprite LoadSprite();
 
 public:
 	Luigi(sf::Vector2f position, std::unique_ptr<EntityController> controller);

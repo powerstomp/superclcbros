@@ -12,7 +12,9 @@ private:
 		PLAYER,
 		GOOMBA,
 		PIRANHA,
-		FLAG
+		FLAG,
+		ONE_UP,
+		COIN
 	};
 	StatePlay& statePlay;
 	GameState& gameState;

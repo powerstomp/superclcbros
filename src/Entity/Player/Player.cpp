@@ -18,13 +18,21 @@ Player::Player(
 }
 
 void Player::OnCollide(Entity& entity, Direction direction) {
+	if (touchedFlag || IsDead())
+		return;
 	if (auto enemy = dynamic_cast<Enemy*>(&entity)) {
 		if (direction == Direction::DOWN && enemy->TakeDamage()) {
 			velocity.y = GetJumpVelocity() * 0.2;
 			onHitEnemy.Emit(*enemy);
 		}
-	} else if (auto flag = dynamic_cast<Flag*>(&entity))
-		onTouchFlag.Emit();
+	} else if (auto flag = dynamic_cast<Flag*>(&entity)) {
+		if (flag->Kill()) {
+			touchedFlag = true;
+			velocity.y = 0;
+			velocity.x = 4;
+			onTouchFlag.Emit();
+		}
+	}
 }
 
 bool Player::Kill() {
@@ -35,7 +43,7 @@ bool Player::Kill() {
 }
 
 bool Player::OnTakeDamage() {
-	if (IsDead())
+	if (IsDead() || touchedFlag)
 		return false;
 	if (modifier != PlayerModifier::NORMAL)
 		modifier = PlayerModifier::NORMAL;
@@ -46,6 +54,10 @@ bool Player::OnTakeDamage() {
 
 PlayerModifier Player::GetModifier() const {
 	return modifier;
+}
+
+bool Player::CanMove() const {
+	return !IsDead() && !touchedFlag;
 }
 
 bool Player::CanUpdateModifier(PlayerModifier modifier) const {

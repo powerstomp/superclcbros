@@ -60,6 +60,10 @@ void Entity::SetDead() {
 	velocity.y = 0;
 }
 
+bool Entity::CanMove() const {
+	return true;
+}
+
 bool Entity::OnTakeDamage() {
 	if (IsDead())
 		return false;
@@ -85,8 +89,12 @@ bool Entity::IsDead() const {
 	return isDead;
 }
 
+bool Entity::IsAffectedByGravity() const {
+	return true;
+}
+
 void Entity::Jump() {
-	if (!IsOnGround())
+	if (!IsOnGround() || !CanMove())
 		return;
 	velocity.y = jumpVelocity;
 	groundState = EntityGroundState::JUMPING;
@@ -94,7 +102,7 @@ void Entity::Jump() {
 }
 
 void Entity::MoveHorizontal(Direction direction) {
-	if (IsDead())
+	if (!CanMove())
 		return;
 	double acceleration = this->acceleration;
 	if (!IsOnGround())

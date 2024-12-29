@@ -3,7 +3,6 @@
 #include <SFML/Graphics/View.hpp>
 
 #include "../Entity/EntityManager.h"
-#include "../Entity/Misc/Flag.h"
 #include "../Entity/Player/Player.h"
 #include "../Entity/TileMap/TileMap.h"
 #include "../Game.h"

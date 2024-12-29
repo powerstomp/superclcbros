@@ -22,7 +22,7 @@ PlayerType GameState::GetPlayerType() const {
 	return playerType;
 }
 
-void GameState::CollectScore() {
+void GameState::OnKillEnemy() {
 	int curTime = clock.getElapsedTime().asMilliseconds();
 	if (curTime - lastGotScore > COMBO_RESET_TIME)
 		currentCombo = 0;
@@ -30,7 +30,14 @@ void GameState::CollectScore() {
 
 	score += SCORE_COLLECT_BASE * std::min(++currentCombo, SCORE_COLLECT_MODIFIER_MAX);
 	if (currentCombo > SCORE_COLLECT_MODIFIER_MAX)
-		onGet1UP.Emit(++lives);
+		OnCollect1UP();
+}
+void GameState::OnCollectCoin() {
+	onGetCoin.Emit();
+	score += COIN_VALUE;
+}
+void GameState::OnCollect1UP() {
+	onGet1UP.Emit(++lives);
 }
 
 void GameState::Start() {

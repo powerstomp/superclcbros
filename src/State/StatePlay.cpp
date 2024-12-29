@@ -6,15 +6,13 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <fstream>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 
-#include "../Entity/Controller/PlayerController.h"
-#include "../Entity/Controller/SimpleAIController.h"
-#include "../Entity/Enemy/Goomba.h"
 #include "../Entity/EntityFactory.h"
-#include "../Entity/Player/Mario.h"
+#include "../Entity/Misc/Flag.h"
+#include "../Entity/Pickup/CoinItem.h"
+#include "../Entity/Pickup/OneUpItem.h"
 #include "../Utility/CSVMapLoader.h"
 #include "../Utility/ServiceLocator.h"
 #include "../Utility/SoundManager.h"
@@ -50,20 +48,30 @@ StatePlay::StatePlay(
 		throw std::invalid_argument("Can't load entities map.");
 	auto entityData = CSV::Parse(entitySpawnFile, 12, 300);
 
+	auto& gameStateRef = *this->gameState;
+	gameStateRef.onGet1UP.Reset();
+
 	EntityFactory entityFactory(*this, *this->gameState);
 	bool foundPlayer = false, foundFlag = false;
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 300; j++) {
-			if (entityData[i][j] == -1 || entityData[i][j] == 115 ||
-				entityData[i][j] == 7)
+			if (entityData[i][j] == -1 || entityData[i][j] == 7)
 				continue;
 			auto entity =
 				entityFactory.Create(entityData[i][j], tilemap->GetTilePosition(j, i));
+			if (!entity)
+				continue;
 			if (auto player = dynamic_cast<Player*>(entity.get())) {
 				foundPlayer = true;
 				this->player = player;
 			} else if (dynamic_cast<Flag*>(entity.get()))
 				foundFlag = true;
+			else if (auto oneUp = dynamic_cast<OneUpItem*>(entity.get()))
+				oneUp->onPickup.Connect([&gameStateRef]() { gameStateRef.OnCollect1UP(); }
+				);
+			else if (auto coin = dynamic_cast<CoinItem*>(entity.get()))
+				coin->onPickup.Connect([&gameStateRef]() { gameStateRef.OnCollectCoin(); }
+				);
 			entityManager.AddEntity(std::move(entity));
 		}
 	}
@@ -72,12 +80,9 @@ StatePlay::StatePlay(
 	if (!foundFlag)
 		throw std::invalid_argument("Missing flag.");
 
-	auto& gameStateRef = *this->gameState;
-	gameStateRef.onGet1UP.Reset();
-
 	player->onHitEnemy.Connect([&gameStateRef](Enemy& entity) {
 		ServiceLocator<SoundManager>::Get().Play("assets/smb_stomp.wav");
-		gameStateRef.CollectScore();
+		gameStateRef.OnKillEnemy();
 	});
 	player->onJump.Connect([](Entity&) {
 		ServiceLocator<SoundManager>::Get().Play("assets/smb_jump-small.wav");
@@ -91,10 +96,19 @@ StatePlay::StatePlay(
 		gameStateRef.Lose();
 		progressState = GameProgressState::ENDED;
 	});
-	player->onTouchFlag.Connect([]() { std::cout << "I won.\n"; });
+	player->onTouchFlag.Connect([&]() mutable {
+		ServiceLocator<sf::Music>::Get().stop();
+		ServiceLocator<SoundManager>::Get().Play(
+			"assets/smb_stage_clear.wav",
+			[&]() mutable { progressState = GameProgressState::DISPOSABLE; }
+		);
+	});
 
 	gameStateRef.onGet1UP.Connect([](int lives) {
 		ServiceLocator<SoundManager>::Get().Play("assets/smb_1-up.wav");
+	});
+	gameStateRef.onGetCoin.Connect([]() {
+		ServiceLocator<SoundManager>::Get().Play("assets/smb_coin.wav");
 	});
 
 	hudText.setPosition(5, 5);
@@ -122,10 +136,11 @@ void StatePlay::OnExit() {
 
 void StatePlay::Update() {
 	entityManager.Update(physicsEngine, *tilemap);
-	if (player->GetPosition().y > WINDOW_HEIGHT + 150 ||
-		gameState->GetTimeRemaining() <= 0)
-		player->Kill();
-	if (progressState == GameProgressState::DISPOSABLE) {
+	if (progressState == GameProgressState::ONGOING) {
+		if (player->GetPosition().y > WINDOW_HEIGHT + 150 ||
+			gameState->GetTimeRemaining() <= 0)
+			player->Kill();
+	} else if (progressState == GameProgressState::DISPOSABLE) {
 		if (player->IsDead())
 			game->StartGame(mapPath, std::move(gameState));
 		else

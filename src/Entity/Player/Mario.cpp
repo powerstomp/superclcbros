@@ -11,7 +11,7 @@
 #include "../Animation/JumpAnimationHandler.h"
 #include "../Animation/WalkAnimationHandler.h"
 
-sf::Sprite Mario::GetSprite() {
+sf::Sprite Mario::LoadSprite() {
 	auto sprite =
 		sf::Sprite(ServiceLocator<TextureManager>::Get().GetOrLoad("assets/mario.png"));
 	sprite.scale(2.5, 2.5);
@@ -19,7 +19,7 @@ sf::Sprite Mario::GetSprite() {
 }
 
 Mario::Mario(sf::Vector2f position, std::unique_ptr<EntityController> controller)
-	: Player(GetSprite(), position, 1.25, 13, -23, std::move(controller)) {
+	: Player(LoadSprite(), position, 1.25, 13, -23, std::move(controller)) {
 	AddAnimation(std::make_unique<IdleAnimationHandler>(
 		ServiceLocator<AnimationManager>::Get().Get("mario_standing")
 	));

@@ -7,7 +7,7 @@
 
 class Flag : public Entity {
 private:
-	sf::Sprite GetSprite();
+	sf::Sprite LoadSprite();
 
 protected:
 	void OnCollide(Entity&, Direction) override;

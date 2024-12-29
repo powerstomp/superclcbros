@@ -1,5 +1,6 @@
 #include "EntityFactory.h"
 
+#include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -10,6 +11,8 @@
 #include "Enemy/Goomba.h"
 #include "Enemy/Piranha.h"
 #include "Misc/Flag.h"
+#include "Pickup/CoinItem.h"
+#include "Pickup/OneUpItem.h"
 #include "Player/Luigi.h"
 #include "Player/Mario.h"
 
@@ -32,10 +35,18 @@ std::unique_ptr<Entity> EntityFactory::Create(int id, sf::Vector2f position) {
 	case GOOMBA:
 		return std::make_unique<Goomba>(position, std::make_unique<SimpleAIController>());
 	case PIRANHA:
-		return std::make_unique<Piranha>(position);
+		return std::make_unique<Piranha>(position + sf::Vector2f(TILE_SIZE * 0.5, 0));
 	case FLAG:
 		return std::make_unique<Flag>(position);
+	case ONE_UP:
+		return std::make_unique<OneUpItem>(
+			position, std::make_unique<SimpleAIController>()
+		);
+	case COIN:
+		return std::make_unique<CoinItem>(position, nullptr);
 	default:
-		throw std::invalid_argument("Unknown entity type.");
+		std::cerr << "Unknown entity type: " << id << '\n';
+		return nullptr;
+		// throw std::invalid_argument("Unknown entity type.");
 	}
 }

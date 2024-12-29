@@ -10,7 +10,7 @@
 #include "../Animation/IdleAnimationHandler.h"
 #include "../Player/Player.h"
 
-sf::Sprite Goomba::GetSprite() {
+sf::Sprite Goomba::LoadSprite() {
 	auto sprite = sf::Sprite(
 		ServiceLocator<TextureManager>::Get().GetOrLoad("assets/smb_enemies_sheet.png")
 	);
@@ -19,7 +19,7 @@ sf::Sprite Goomba::GetSprite() {
 }
 
 Goomba::Goomba(sf::Vector2f position, std::unique_ptr<EntityController> controller)
-	: Enemy(GetSprite(), position, 100000, 4, -12, std::move(controller)) {
+	: Enemy(LoadSprite(), position, 100000, 4, -12, std::move(controller)) {
 	AddAnimation(std::make_unique<IdleAnimationHandler>(
 		ServiceLocator<AnimationManager>::Get().Get("goomba_moving")
 	));

@@ -17,6 +17,9 @@ class Player : public Entity {
 protected:
 	PlayerModifier modifier = PlayerModifier::NORMAL;
 
+	bool touchedFlag = false;
+	bool CanMove() const override;
+
 	bool CanUpdateModifier(PlayerModifier) const;
 	void OnCollide(Entity&, Direction) override;
 	bool OnTakeDamage() override;

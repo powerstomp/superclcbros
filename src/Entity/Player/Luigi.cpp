@@ -11,7 +11,7 @@
 #include "../Animation/JumpAnimationHandler.h"
 #include "../Animation/WalkAnimationHandler.h"
 
-sf::Sprite Luigi::GetSprite() {
+sf::Sprite Luigi::LoadSprite() {
 	auto sprite =
 		sf::Sprite(ServiceLocator<TextureManager>::Get().GetOrLoad("assets/luigi.png"));
 	sprite.scale(2.5, 2.5);
@@ -19,7 +19,7 @@ sf::Sprite Luigi::GetSprite() {
 }
 
 Luigi::Luigi(sf::Vector2f position, std::unique_ptr<EntityController> controller)
-	: Player(GetSprite(), position, 1, 10, -26, std::move(controller)) {
+	: Player(LoadSprite(), position, 1, 10, -26, std::move(controller)) {
 	AddAnimation(std::make_unique<IdleAnimationHandler>(
 		ServiceLocator<AnimationManager>::Get().Get("luigi_standing")
 	));
