@@ -125,6 +125,8 @@ void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
 void PhysicsEngine::Update(Entity& a, Entity& b) {
 	auto aBox = a.GetBoundingBox(), bBox = b.GetBoundingBox();
 	bBox.top -= 1;
+	bBox.left += 1;
+	bBox.width -= 2;
 
 	auto collisionResult = GetCollisionResult(a.GetBoundingBox(), bBox);
 	if (collisionResult.direction == Direction::NONE)

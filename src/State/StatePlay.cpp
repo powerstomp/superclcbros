@@ -19,11 +19,13 @@
 #include "../Utility/SoundManager.h"
 #include "../Utility/TextureManager.h"
 
-std::unique_ptr<TileMap> StatePlay::LoadTileMapFromFile(const std::string& path) {
+std::unique_ptr<TileMap> StatePlay::LoadTileMapFromFile(
+	const std::string& path, int mapWidth, int mapHeight
+) {
 	std::ifstream mapFile(path);
 	if (!mapFile.good())
 		throw std::invalid_argument("Can't load map: " + path);
-	auto mapData = CSV::Parse(mapFile, 12, 300);
+	auto mapData = CSV::Parse(mapFile, mapHeight, mapWidth);
 
 	auto tileset = Tileset{
 		.texture = ServiceLocator<TextureManager>::Get().GetOrLoad("assets/objects.png"),
@@ -34,7 +36,7 @@ std::unique_ptr<TileMap> StatePlay::LoadTileMapFromFile(const std::string& path)
 		.spacing = 1,
 	};
 
-	return std::make_unique<TileMap>(mapData, 300, 12, tileset);
+	return std::make_unique<TileMap>(mapData, mapWidth, mapHeight, tileset);
 }
 
 StatePlay::StatePlay(
@@ -44,20 +46,28 @@ StatePlay::StatePlay(
 	  gameState(std::move(gameState)),
 	  mapPath(mapPath),
 	  entityFactory(*this, *this->gameState) {
-	tilemap = LoadTileMapFromFile(mapPath + "_Terrain.csv");
-	backgroundTilemap = LoadTileMapFromFile(mapPath + "_Background.csv");
+	int mapWidth, mapHeight;
+	std::ifstream mapInfo(mapPath + "_Info.txt");
+	if (!mapInfo.good())
+		throw std::invalid_argument("Map not found.");
+	if (!(mapInfo >> mapWidth >> mapHeight))
+		throw std::invalid_argument("Can't load map info.");
+
+	tilemap = LoadTileMapFromFile(mapPath + "_Terrain.csv", mapWidth, mapHeight);
+	backgroundTilemap =
+		LoadTileMapFromFile(mapPath + "_Background.csv", mapWidth, mapHeight);
 
 	std::ifstream entitySpawnFile(mapPath + "_Entities.csv");
 	if (!entitySpawnFile.good())
 		throw std::invalid_argument("Can't load entities map.");
-	auto entityData = CSV::Parse(entitySpawnFile, 12, 300);
+	auto entityData = CSV::Parse(entitySpawnFile, mapHeight, mapWidth);
 
 	auto& gameStateRef = *this->gameState;
 	gameStateRef.onGet1UP.Reset();
 
 	bool foundPlayer = false, foundFlag = false;
-	for (int i = 0; i < 12; i++) {
-		for (int j = 0; j < 300; j++) {
+	for (int i = 0; i < mapHeight; i++) {
+		for (int j = 0; j < mapWidth; j++) {
 			if (entityData[i][j] == -1)
 				continue;
 			auto entity =

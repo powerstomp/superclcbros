@@ -33,7 +33,9 @@ private:
 	GameProgressState progressState = GameProgressState::ONGOING;
 
 private:
-	std::unique_ptr<TileMap> LoadTileMapFromFile(const std::string& path);
+	static std::unique_ptr<TileMap> LoadTileMapFromFile(
+		const std::string& path, int mapWidth, int mapHeight
+	);
 
 	void UpdateView();
 	void UpdateHUD();
