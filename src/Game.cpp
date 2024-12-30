@@ -80,9 +80,11 @@ void Game::PopState() {
 		std::cerr << "Tried to pop last game state!\n";
 		return;
 	}
-	GetState().OnExit();
-	states.pop();
-	GetState().OnEnter();
+	do {
+		GetState().OnExit();
+		states.pop();
+		GetState().OnEnter();
+	} while (states.size() > 1 && GetState().IsIntermediary());
 }
 void Game::PushState(std::unique_ptr<State> state) {
 	if (!states.empty())

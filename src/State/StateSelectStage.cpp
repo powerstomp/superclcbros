@@ -14,3 +14,7 @@ StateSelectStage::StateSelectStage(Game* game) : StateMenu("Select stage", game)
 	AddStage("Stage B", "assets/B");
 	AddStage("Stage C", "assets/C");
 }
+
+bool StateSelectStage::IsIntermediary() const {
+	return true;
+}

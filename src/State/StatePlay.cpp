@@ -13,6 +13,7 @@
 #include "../Entity/Misc/Flag.h"
 #include "../Entity/Pickup/CoinItem.h"
 #include "../Entity/Pickup/OneUpItem.h"
+#include "../Settings.h"
 #include "../Utility/CSVMapLoader.h"
 #include "../Utility/ServiceLocator.h"
 #include "../Utility/SoundManager.h"
@@ -126,7 +127,8 @@ void StatePlay::UpdateView() {
 
 void StatePlay::OnEnter() {
 	view = game->window.getDefaultView();
-	ServiceLocator<sf::Music>::Get().play();
+	if (ServiceLocator<Settings>::Get().IsMusicEnabled())
+		ServiceLocator<sf::Music>::Get().play();
 	gameState->Start();
 }
 

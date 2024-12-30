@@ -12,6 +12,7 @@ enum class PlayerType {
 
 class GameState {
 private:
+	static constexpr int GAME_TIME = 400;
 	static constexpr int COMBO_RESET_TIME = 3000;
 	static constexpr int COIN_VALUE = 200;
 	static constexpr int SCORE_COLLECT_BASE = 500;

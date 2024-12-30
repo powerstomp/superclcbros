@@ -1,7 +1,6 @@
 #include "GameState.h"
 
 #include <algorithm>
-#include <iostream>
 
 GameState::GameState(PlayerType playerType) : playerType(playerType) {
 }
@@ -15,7 +14,7 @@ int GameState::GetLives() const {
 }
 
 int GameState::GetTimeRemaining() const {
-	return 400 - clock.getElapsedTime().asSeconds();
+	return std::max(0, GAME_TIME - static_cast<int>(clock.getElapsedTime().asSeconds()));
 }
 
 PlayerType GameState::GetPlayerType() const {

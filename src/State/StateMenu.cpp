@@ -58,6 +58,8 @@ void StateMenu::OnSFMLEvent(const sf::Event& event) {
 			auto& item = items[selectedItem];
 			item.onPress();
 			item.updateDisplay(item.text);
+		} else if (event.key.code == sf::Keyboard::Key::Escape) {
+			game->PopState();
 		}
 	}
 }
@@ -84,8 +86,8 @@ void StateMenu::AddMenuItem(std::function<void()> onPress, const std::string& te
 
 void StateMenu::AddMenuItem(bool& value, const std::string& _text) {
 	AddMenuItem(
-		[&value]() mutable { value = !value; },
-		[text = std::string(_text), &value](sf::Text& sfmlText) {
+		[&value = value]() { value = !value; },
+		[text = std::string(_text), &value = value](sf::Text& sfmlText) mutable {
 			sfmlText.setString(text + (value ? " (On)" : " (Off)"));
 		}
 	);

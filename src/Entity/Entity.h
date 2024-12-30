@@ -50,6 +50,9 @@ protected:
 
 	sf::Sprite& GetSprite();
 	void AddAnimation(std::unique_ptr<AnimationHandler>);
+
+	// Active voice. A attacks B -> A inflicts damage on B
+	// => A::OnCollide does damage to B, NOT vice versa.
 	virtual void OnCollide(Entity&, Direction) = 0;
 	virtual bool OnTakeDamage();
 	void SetDead();

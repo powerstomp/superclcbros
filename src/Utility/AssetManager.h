@@ -4,8 +4,11 @@
 #include <map>
 #include <string>
 
+#include "NonCopyable.h"
+
+// For general sfml types (ones with ::loadFromFile)
 template <typename T>
-class AssetManager {
+class AssetManager : public NonCopyable {
 protected:
 	std::map<std::string, T> data;
 

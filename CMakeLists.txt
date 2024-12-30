@@ -25,9 +25,11 @@ add_executable(superclcbros
 
 	src/Game.cpp
 	src/GameState.cpp
+	src/Settings.cpp
 
 	src/State/StateMenu.cpp
 	src/State/StateStart.cpp
+	src/State/StateSettings.cpp
 	src/State/StatePlay.cpp
 	src/State/StateSelectStage.cpp
 	src/State/StateSelectPlayer.cpp

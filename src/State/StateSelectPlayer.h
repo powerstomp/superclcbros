@@ -10,6 +10,8 @@ private:
 
 public:
 	StateSelectPlayer(Game* game, const std::string& mapPath);
+
+	bool IsIntermediary() const override;
 };
 
 #endif

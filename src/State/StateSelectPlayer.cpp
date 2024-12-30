@@ -13,3 +13,7 @@ StateSelectPlayer::StateSelectPlayer(Game* game, const std::string& mapPath)
 	AddPlayerType("Mario", PlayerType::MARIO);
 	AddPlayerType("Luigi", PlayerType::LUIGI);
 }
+
+bool StateSelectPlayer::IsIntermediary() const {
+	return true;
+}

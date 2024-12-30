@@ -4,9 +4,10 @@
 #include <map>
 #include <string>
 
+#include "../../Utility/NonCopyable.h"
 #include "Animation.h"
 
-class AnimationManager {
+class AnimationManager : public NonCopyable {
 private:
 	std::map<std::string, Animation> animations;
 

@@ -8,12 +8,15 @@
 
 #include "Entity/Animation/AnimationManager.h"
 #include "Game.h"
+#include "Settings.h"
 #include "Utility/MusicManager.h"
 #include "Utility/ServiceLocator.h"
 #include "Utility/SoundManager.h"
 #include "Utility/TextureManager.h"
 
 int main() {
+	// Provide services to our game
+	ServiceLocator<Settings>::Set(std::make_unique<Settings>());
 	ServiceLocator<TextureManager>::Set(std::make_unique<TextureManager>());
 	ServiceLocator<SoundManager>::Set(std::make_unique<SoundManager>());
 	ServiceLocator<MusicManager>::Set(std::make_unique<MusicManager>());
@@ -35,6 +38,9 @@ int main() {
 
 	std::cout << "Services initialized.\n";
 
+	// This thread checks for if sounds are loaded, but finished playing
+	// Because sfml sounds stop playing when they are destructed,
+	// sound manager stores sounds, then disposes of them when finished.
 	std::thread([&soundManager = ServiceLocator<SoundManager>::Get()]() mutable {
 		while (true) {
 			soundManager.Update();

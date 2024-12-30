@@ -9,6 +9,8 @@ private:
 
 public:
 	StateSelectStage(Game* game);
+
+	bool IsIntermediary() const override;
 };
 
 #endif

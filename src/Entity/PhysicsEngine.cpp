@@ -8,6 +8,9 @@
 void PhysicsEngine::ResolveMapCollisionHorizontal(
 	Entity& entity, const CollisionResult& collisionResult
 ) {
+	// Since we apply velocity then resolve, there is a chance we detect
+	// a horizontal collision on flat ground. This prevents it by checking
+	// if we are in a block by at least more than one tick of velocity.
 	if (collisionResult.overlap.y < std::abs(entity.velocity.y) + 1e-5)
 		return;
 	if (collisionResult.direction == Direction::RIGHT)
@@ -107,6 +110,7 @@ void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
 	if (entity.groundState == EntityGroundState::GROUND)
 		entity.groundState = EntityGroundState::AIR;
 
+	// Apply horizontally then vertically to avoid getting stuck in blocks
 	HandleMapCollision(entity, tileMap, ResolveMapCollisionHorizontal);
 	HandleMapCollision(entity, tileMap, ResolveMapCollisionVertical);
 

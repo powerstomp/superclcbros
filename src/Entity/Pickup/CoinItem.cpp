@@ -13,7 +13,7 @@ sf::Sprite CoinItem::LoadSprite() {
 	auto sprite = sf::Sprite(
 		ServiceLocator<TextureManager>::Get().GetOrLoad("assets/misc_sprites.png")
 	);
-	sprite.scale(2.5, 2.5);
+	sprite.scale(3, 3);
 	return sprite;
 }
 
