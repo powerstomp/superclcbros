@@ -27,6 +27,7 @@ protected:
 public:
 	Signal<Enemy&> onHitEnemy;
 	Signal<> onTouchFlag;
+	Signal<PlayerModifier> onGetModifier;
 
 	Player(
 		sf::Sprite sprite, sf::Vector2f position, double acceleration, double maxSpeed,

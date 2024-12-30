@@ -74,6 +74,8 @@ bool Player::CanUpdateModifier(PlayerModifier modifier) const {
 }
 
 void Player::OnGetModifier(PlayerModifier modifier) {
-	if (CanUpdateModifier(modifier))
+	if (CanUpdateModifier(modifier)) {
 		this->modifier = modifier;
+		onGetModifier.Emit(modifier);
+	}
 }

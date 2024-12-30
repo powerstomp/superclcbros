@@ -20,12 +20,22 @@ enum class EntityGroundState {
 };
 
 class Entity : public sf::Drawable {
-private:
 	friend class PhysicsEngine;
+
+protected:
+	struct AnimationSet {
+		std::list<std::unique_ptr<AnimationHandler>> animations;
+		std::function<bool()> match;
+	};
+
+private:
+	static constexpr int INVULNERABILITY_LENGTH = 100;
 
 	sf::Sprite sprite;
 
 	bool isDead = false;
+
+	int invulnerabilityTicks = 0;
 
 	double acceleration, maxSpeed;
 	double jumpVelocity;
@@ -34,7 +44,7 @@ private:
 	Direction facing = Direction::LEFT;
 
 	std::unique_ptr<EntityController> controller;
-	std::list<std::unique_ptr<AnimationHandler>> animations;
+	std::list<AnimationSet> animationSets;
 
 	void FlipSprite();
 
@@ -47,9 +57,11 @@ protected:
 
 	virtual bool CanMove() const;
 	virtual bool IsAffectedByGravity() const;
+	virtual bool IsAffectedByTiles() const;
 
 	sf::Sprite& GetSprite();
 	void AddAnimation(std::unique_ptr<AnimationHandler>);
+	void AddAnimationSet(AnimationSet&&);
 
 	// Active voice. A attacks B -> A inflicts damage on B
 	// => A::OnCollide does damage to B, NOT vice versa.

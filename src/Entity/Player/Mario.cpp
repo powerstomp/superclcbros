@@ -10,6 +10,7 @@
 #include "../Animation/IdleAnimationHandler.h"
 #include "../Animation/JumpAnimationHandler.h"
 #include "../Animation/WalkAnimationHandler.h"
+#include "Player.h"
 
 sf::Sprite Mario::LoadSprite() {
 	auto sprite =
@@ -32,4 +33,16 @@ Mario::Mario(sf::Vector2f position, std::unique_ptr<EntityController> controller
 	AddAnimation(std::make_unique<DeadAnimationHandler>(
 		ServiceLocator<AnimationManager>::Get().Get("mario_death")
 	));
+
+	AnimationSet largeSet{.match = [&]() mutable { return modifier == LARGE; }};
+	largeSet.animations.push_front(std::make_unique<IdleAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("large_mario_standing")
+	));
+	largeSet.animations.push_front(std::make_unique<WalkAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("large_mario_running")
+	));
+	largeSet.animations.push_front(std::make_unique<JumpAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("large_mario_jumping")
+	));
+	AddAnimationSet(std::move(largeSet));
 }

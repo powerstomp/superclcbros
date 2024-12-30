@@ -18,6 +18,8 @@ Entity::Entity(
 	  controller(std::move(controller)) {
 	this->sprite.setPosition(position);
 	this->sprite.setTextureRect(sf::IntRect(0, 0, 0, 0));
+
+	animationSets.push_back(AnimationSet{.match = []() { return true; }});
 }
 
 sf::Sprite& Entity::GetSprite() {
@@ -25,7 +27,11 @@ sf::Sprite& Entity::GetSprite() {
 }
 
 void Entity::AddAnimation(std::unique_ptr<AnimationHandler> handler) {
-	animations.push_front(std::move(handler));
+	animationSets.back().animations.push_front(std::move(handler));
+}
+
+void Entity::AddAnimationSet(AnimationSet&& set) {
+	animationSets.push_front(std::move(set));
 }
 
 void Entity::FlipSprite() {
@@ -44,11 +50,18 @@ double Entity::GetJumpVelocity() const {
 }
 
 void Entity::Update() {
+	if (invulnerabilityTicks > 0)
+		invulnerabilityTicks--;
+
 	if (controller)
 		controller->Update(*this);
-	for (auto& handler : animations) {
-		if (handler->Update(*this, sprite))
-			break;
+	for (auto& set : animationSets) {
+		if (!set.match())
+			continue;
+		for (auto& handler : set.animations)
+			if (handler->Update(*this, sprite))
+				break;
+		break;
 	}
 	if (facing == Direction::RIGHT)
 		FlipSprite();
@@ -72,9 +85,12 @@ bool Entity::OnTakeDamage() {
 }
 
 bool Entity::TakeDamage() {
+	if (invulnerabilityTicks > 0)
+		return false;
 	if (IsDead() || !OnTakeDamage())
 		return false;
 
+	invulnerabilityTicks = INVULNERABILITY_LENGTH;
 	onDamaged.Emit(*this);
 	if (IsDead())
 		onDeath.Emit(*this);
@@ -90,6 +106,9 @@ bool Entity::IsDead() const {
 }
 
 bool Entity::IsAffectedByGravity() const {
+	return true;
+}
+bool Entity::IsAffectedByTiles() const {
 	return true;
 }
 

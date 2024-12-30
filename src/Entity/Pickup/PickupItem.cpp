@@ -11,11 +11,15 @@ PickupItem::PickupItem(
 	: Entity(sprite, position, 100000, 4, -12, std::move(controller)) {
 }
 
+void PickupItem::OnPickup(Player& entity) {
+}
+
 void PickupItem::OnCollide(Entity& entity, Direction direction) {
 	if (auto player = dynamic_cast<Player*>(&entity)) {
 		if (!IsDead()) {
-			onPickup.Emit();
 			SetDead();
+			OnPickup(*player);
+			onPickup.Emit(*this);
 		}
 	}
 }

@@ -6,10 +6,10 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
-#include "../Entity/EntityFactory.h"
 #include "../Entity/Misc/Flag.h"
 #include "../Entity/Pickup/CoinItem.h"
 #include "../Entity/Pickup/OneUpItem.h"
@@ -40,7 +40,10 @@ std::unique_ptr<TileMap> StatePlay::LoadTileMapFromFile(const std::string& path)
 StatePlay::StatePlay(
 	Game* game, std::unique_ptr<GameState> gameState, const std::string& mapPath
 )
-	: game{game}, gameState(std::move(gameState)), mapPath(mapPath) {
+	: game{game},
+	  gameState(std::move(gameState)),
+	  mapPath(mapPath),
+	  entityFactory(*this, *this->gameState) {
 	tilemap = LoadTileMapFromFile(mapPath + "_Terrain.csv");
 	backgroundTilemap = LoadTileMapFromFile(mapPath + "_Background.csv");
 
@@ -52,11 +55,10 @@ StatePlay::StatePlay(
 	auto& gameStateRef = *this->gameState;
 	gameStateRef.onGet1UP.Reset();
 
-	EntityFactory entityFactory(*this, *this->gameState);
 	bool foundPlayer = false, foundFlag = false;
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 300; j++) {
-			if (entityData[i][j] == -1 || entityData[i][j] == 7)
+			if (entityData[i][j] == -1)
 				continue;
 			auto entity =
 				entityFactory.Create(entityData[i][j], tilemap->GetTilePosition(j, i));
@@ -68,11 +70,26 @@ StatePlay::StatePlay(
 			} else if (dynamic_cast<Flag*>(entity.get()))
 				foundFlag = true;
 			else if (auto oneUp = dynamic_cast<OneUpItem*>(entity.get()))
-				oneUp->onPickup.Connect([&gameStateRef]() { gameStateRef.OnCollect1UP(); }
-				);
+				oneUp->onPickup.Connect([&gameStateRef](PickupItem&) {
+					gameStateRef.OnCollect1UP();
+				});
 			else if (auto coin = dynamic_cast<CoinItem*>(entity.get()))
-				coin->onPickup.Connect([&gameStateRef]() { gameStateRef.OnCollectCoin(); }
-				);
+				coin->onPickup.Connect([&gameStateRef](PickupItem&) {
+					gameStateRef.OnCollectCoin();
+				});
+			else if (auto luckyBlock = dynamic_cast<LuckyBlock*>(entity.get())) {
+				luckyBlock->onPickup.Connect([&](PickupItem& pickupItem) mutable {
+					auto& luckyBlock = static_cast<LuckyBlock&>(pickupItem);
+					if (luckyBlock.GetType() == LuckyBlockType::COIN)
+						gameStateRef.OnCollectCoin();
+					else {
+						auto lol = entityFactory.CreateFromLuckyBlockType(
+							luckyBlock.GetType(), luckyBlock.GetPosition()
+						);
+						entityManager.AddEntity(std::move(lol));
+					}
+				});
+			}
 			entityManager.AddEntity(std::move(entity));
 		}
 	}
@@ -103,6 +120,13 @@ StatePlay::StatePlay(
 			"assets/smb_stage_clear.wav",
 			[&]() mutable { progressState = GameProgressState::DISPOSABLE; }
 		);
+	});
+	player->onGetModifier.Connect([&](PlayerModifier) mutable {
+		ServiceLocator<SoundManager>::Get().Play("assets/smb_powerup.wav");
+	});
+	player->onDamaged.Connect([](Entity& entity) {
+		if (!entity.IsDead())
+			ServiceLocator<SoundManager>::Get().Play("assets/damage.wav");
 	});
 
 	gameStateRef.onGet1UP.Connect([](int lives) {

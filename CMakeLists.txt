@@ -52,6 +52,8 @@ add_executable(superclcbros
 	src/Entity/Pickup/PickupItem.cpp
 	src/Entity/Pickup/CoinItem.cpp
 	src/Entity/Pickup/OneUpItem.cpp
+	src/Entity/Pickup/LuckyBlock.cpp
+	src/Entity/Pickup/MushroomItem.cpp
 
 	src/Entity/Controller/PlayerController.cpp
 	src/Entity/Controller/SimpleAIController.cpp

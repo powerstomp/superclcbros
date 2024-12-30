@@ -12,6 +12,8 @@
 #include "Enemy/Piranha.h"
 #include "Misc/Flag.h"
 #include "Pickup/CoinItem.h"
+#include "Pickup/LuckyBlock.h"
+#include "Pickup/MushroomItem.h"
 #include "Pickup/OneUpItem.h"
 #include "Player/Luigi.h"
 #include "Player/Mario.h"
@@ -21,7 +23,7 @@ EntityFactory::EntityFactory(StatePlay& statePlay, GameState& gameState)
 }
 
 std::unique_ptr<Entity> EntityFactory::Create(int id, sf::Vector2f position) {
-	EntityType type = static_cast<EntityType>(id);
+	EntitySpawnType type = static_cast<EntitySpawnType>(id);
 	switch (type) {
 	case PLAYER:
 		if (gameState.GetPlayerType() == PlayerType::MARIO)
@@ -44,9 +46,34 @@ std::unique_ptr<Entity> EntityFactory::Create(int id, sf::Vector2f position) {
 		);
 	case COIN:
 		return std::make_unique<CoinItem>(position, nullptr);
+	case BLOCK_COIN:
+		return std::make_unique<LuckyBlock>(
+			position + sf::Vector2f(0, 50), LuckyBlockType::COIN
+		);
+	case BLOCK_MUSHROOM:
+		return std::make_unique<LuckyBlock>(
+			position + sf::Vector2f(0, 50), LuckyBlockType::MUSHROOM
+		);
 	default:
 		std::cerr << "Unknown entity type: " << id << '\n';
 		return nullptr;
 		// throw std::invalid_argument("Unknown entity type.");
+	}
+}
+
+std::unique_ptr<Entity> EntityFactory::CreateFromLuckyBlockType(
+	LuckyBlockType type, sf::Vector2f position
+) {
+	switch (type) {
+	case LuckyBlockType::MUSHROOM: {
+		auto result = std::make_unique<MushroomItem>(
+			position, std::make_unique<SimpleAIController>()
+		);
+		result->Jump();
+		return result;
+	}
+	default:
+		std::cerr << "Unknown entity type: " << (int)type << '\n';
+		return nullptr;
 	}
 }

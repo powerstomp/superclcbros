@@ -2,6 +2,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/View.hpp>
 
+#include "../Entity/EntityFactory.h"
 #include "../Entity/EntityManager.h"
 #include "../Entity/Player/Player.h"
 #include "../Entity/TileMap/TileMap.h"
@@ -21,6 +22,7 @@ private:
 	sf::Text hudText;
 
 	std::unique_ptr<GameState> gameState;
+	EntityFactory entityFactory;
 	Game* game;
 	Player* player;
 	sf::View view;

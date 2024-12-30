@@ -32,4 +32,16 @@ Luigi::Luigi(sf::Vector2f position, std::unique_ptr<EntityController> controller
 	AddAnimation(std::make_unique<DeadAnimationHandler>(
 		ServiceLocator<AnimationManager>::Get().Get("luigi_death")
 	));
+
+	AnimationSet largeSet{.match = [&]() mutable { return modifier == LARGE; }};
+	largeSet.animations.push_front(std::make_unique<IdleAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("large_luigi_standing")
+	));
+	largeSet.animations.push_front(std::make_unique<WalkAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("large_luigi_running")
+	));
+	largeSet.animations.push_front(std::make_unique<JumpAnimationHandler>(
+		ServiceLocator<AnimationManager>::Get().Get("large_luigi_jumping")
+	));
+	AddAnimationSet(std::move(largeSet));
 }

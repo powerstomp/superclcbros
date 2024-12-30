@@ -1,5 +1,6 @@
 #include "PhysicsEngine.h"
 
+#include <SFML/Graphics/Rect.hpp>
 #include <cmath>
 #include <iostream>
 
@@ -110,6 +111,9 @@ void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
 	if (entity.groundState == EntityGroundState::GROUND)
 		entity.groundState = EntityGroundState::AIR;
 
+	if (!entity.IsAffectedByTiles())
+		return;
+
 	// Apply horizontally then vertically to avoid getting stuck in blocks
 	HandleMapCollision(entity, tileMap, ResolveMapCollisionHorizontal);
 	HandleMapCollision(entity, tileMap, ResolveMapCollisionVertical);
@@ -119,7 +123,10 @@ void PhysicsEngine::Update(Entity& entity, const TileMap& tileMap) {
 }
 
 void PhysicsEngine::Update(Entity& a, Entity& b) {
-	auto collisionResult = GetCollisionResult(a.GetBoundingBox(), b.GetBoundingBox());
+	auto aBox = a.GetBoundingBox(), bBox = b.GetBoundingBox();
+	bBox.top -= 1;
+
+	auto collisionResult = GetCollisionResult(a.GetBoundingBox(), bBox);
 	if (collisionResult.direction == Direction::NONE)
 		return;
 	a.OnCollide(b, collisionResult.direction);
